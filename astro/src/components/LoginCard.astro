@@ -1,0 +1,53 @@
+---
+// src/components/LoginCard.astro
+---
+
+<div class="card shadow-sm border-0 h-100">
+  <div class="card-body p-4 d-flex flex-column justify-content-center">
+    
+    <div class="text-center mb-4">
+      <h1 class="h4 fw-bold text-primary">Acceso al Personal</h1>
+      <p class="text-muted small">Ingresa tus credenciales para acceder al sistema</p>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <div class="mb-3">
+        <label for="username" class="form-label fw-bold">Usuario / Correo</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          id="username" 
+          placeholder="ej. recepcion1" 
+          required 
+        />
+        <div class="invalid-feedback">Por favor ingresa tu usuario.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label fw-bold">Contraseña</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          id="password" 
+          placeholder="••••••••" 
+          required 
+        />
+        <div class="invalid-feedback">Por favor ingresa tu contraseña.</div>
+      </div>
+
+      <!-- Alerta oculta para errores de login -->
+      <div id="loginAlert" class="alert alert-danger d-none py-2 small" role="alert">
+        Usuario o contraseña incorrectos.
+      </div>
+
+      <div class="d-grid mt-4">
+        <button type="submit" class="btn btn-primary btn-lg fs-6">
+          Iniciar Sesión
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+<!-- Script JS independiente que maneja la validación e inicio de sesión -->
+<script is:inline src="/js/login.js"></script>

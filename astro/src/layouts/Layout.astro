@@ -1,0 +1,28 @@
+---
+
+// src/layouts/Layout.astro (o el nombre que tenga en tu proyecto)
+import '../styles/bootstrap.min.css'; // Ajusta la ruta a donde guardaste el CSS de Bootstrap
+
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Thec Service</title>
+	</head>
+	<body>
+		<slot />
+		<script is:inline src="/js/bootstrap.bundle.min.js"></script>
+	</body>
+</html>
+
+<style>
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+</style>

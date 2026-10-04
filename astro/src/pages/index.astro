@@ -1,0 +1,18 @@
+---
+import LoginCard from '../components/LoginCard.astro';
+import ConsultaCard from '../components/ConsultaCard.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+	<main class="container d-flex align-items-center min-vh-100 py-4">
+		<div class="row justify-content-center w-100 g-4">
+			<div class="col-12 col-md-6 col-lg-5">
+				<LoginCard />
+			</div>
+			<div class="col-12 col-md-6 col-lg-5">
+				<ConsultaCard />
+			</div>
+		</div>
+	</main>
+</Layout>
