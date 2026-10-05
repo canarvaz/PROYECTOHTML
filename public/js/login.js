@@ -30,7 +30,7 @@ form.addEventListener('submit', function (event) {
 	const password = document.getElementById('password').value;
 
 	if (USERS[username] && USERS[username] === password) {
-		window.location.href = '/recepcion.html';
+		window.location.href = '/recepcion';
 		return;
 	}
 

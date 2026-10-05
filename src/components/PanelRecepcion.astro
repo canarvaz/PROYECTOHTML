@@ -1,0 +1,42 @@
+---
+// src/components/PanelRecepcion.astro
+---
+
+<main class="container py-5">
+	<header class="text-center mb-5">
+		<h1 class="h3 fw-bold text-primary">Panel de Recepción</h1>
+		<p class="text-muted">Selecciona una acción para continuar</p>
+	</header>
+
+	<div class="row justify-content-center g-4">
+		<div class="col-12 col-md-6 col-lg-4">
+			<div class="card shadow-sm border-0 h-100">
+				<div class="card-body p-4 text-center">
+					<h2 class="h5 fw-bold text-primary">Nueva Orden</h2>
+					<p class="text-muted small">Registra una nueva orden de servicio.</p>
+					<a href="/recepcion/nueva-orden" class="btn btn-primary w-100">Abrir</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-md-6 col-lg-4">
+			<div class="card shadow-sm border-0 h-100">
+				<div class="card-body p-4 text-center">
+					<h2 class="h5 fw-bold text-primary">Órdenes</h2>
+					<p class="text-muted small">Consulta y busca órdenes registradas.</p>
+					<a href="/recepcion/ordenes" class="btn btn-primary w-100">Abrir</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-12 col-md-6 col-lg-4">
+			<div class="card shadow-sm border-0 h-100">
+				<div class="card-body p-4 text-center">
+					<h2 class="h5 fw-bold text-primary">Sesión</h2>
+					<p class="text-muted small">Cierra tu sesión actual.</p>
+					<a href="/" class="btn btn-outline-danger w-100">Cerrar Sesión</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>

@@ -48,13 +48,24 @@ Para el servidor de desarrollo se recomienda `astro dev --background` y gestiona
 
 ## Funcionalidades actuales
 
-- **Acceso al Personal** (`src/components/LoginCard.astro` + `public/js/login.js`): formulario con validación de Bootstrap. Credenciales de prueba: `recepcion1/1234`, `admin/admin`. Redirige a `/recepcion.html`.
-- **¿Eres cliente?** (`src/components/ConsultaCard.astro`): enlace "Consultar Orden" (aún sin destino).
+- **Acceso al Personal** (`src/components/LoginCard.astro` + `public/js/login.js`): formulario con validación de Bootstrap. Credenciales de prueba: `recepcion1/1234`, `admin/admin`. Redirige a `/recepcion`.
+- **Panel de Recepción** (`src/pages/recepcion.astro`): acceso a nueva orden, listado de órdenes y cierre de sesión.
+- **¿Eres cliente?** (`src/components/ConsultaCard.astro`): enlace "Consultar Orden" → `/consulta` (página pendiente).
+
+## Mapa de navegación
+
+| Ruta | Página | Quién la usa | Estado |
+|------|--------|--------------|--------|
+| `/` | Login personal / Consulta cliente | Todos | ✅ |
+| `/recepcion` | Panel de recepción | Personal recepción/admin | ✅ |
+| `/recepcion/nueva-orden` | Registrar nueva orden de servicio | Recepción | ❌ Pendiente |
+| `/recepcion/ordenes` | Listado/búsqueda de órdenes | Recepción | ❌ Pendiente |
+| `/consulta` | Consulta de estado de orden para clientes | Clientes | ❌ Pendiente |
 
 ## Pendientes conocidos
 
-- Crear la página de recepción (`/recepcion`).
-- Implementar la consulta de órdenes de clientes.
+- Crear `/recepcion/nueva-orden` y `/recepcion/ordenes`.
+- Implementar la consulta de órdenes de clientes (`/consulta`).
 - Reemplazar las credenciales hardcodeadas por autenticación real.
 
 ## Registro de cambios
