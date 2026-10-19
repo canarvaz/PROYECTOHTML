@@ -1,0 +1,67 @@
+---
+import "../styles/bootstrap.min.css";
+import Boton from "../components/Boton.astro";
+
+interface Props {
+  titulo: string;
+  activo: string;
+}
+
+const { titulo, activo } = Astro.props;
+
+const modulos = [
+  { href: "/", label: "Inicio" },
+  { href: "/recepcion", label: "Recepción" },
+  { href: "/inicio", label: "Gestión de clientes" },
+  { href: "/ordenes/todos", label: "Lista de órdenes" },
+  { href: "/facturacion", label: "Facturación" },
+  { href: "/proceso-reparacion", label: "Proceso de reparación" },
+  { href: "/usuarios", label: "Administrador de sistema" },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tech Service - {titulo}</title>
+  </head>
+  <body>
+    <div class="d-flex min-vh-100">
+      <!-- Sidebar: altura completa -->
+      <nav
+        class="offcanvas-lg offcanvas-start bg-dark text-white p-3 d-flex flex-column aria-labelledby"
+        style="width: 240px; min-height: 100vh;"
+        id="sidebarMenu"
+        tabindex="-1"
+      >
+        <h2 class="h5 fw-bold text-center py-2">Thec Service</h2>
+        <ul class="nav flex-column gap-1">
+          {modulos.map((m) => (
+            <li class="nav-item">
+              <a href={m.href} class={`nav-link ${m.href === activo ? "active bg-primary text-white rounded" : "text-white-50"}`}>
+                {m.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/login" class="nav-link text-white-50 border-top border-secondary ps-3 pt-3 mt-3">
+          Cerrar sesión
+        </a>
+      </nav>
+
+      <!-- Contenido: header + cuerpo -->
+      <div class="flex-grow-1 d-flex flex-column">
+        <header class="row bg-light border-bottom align-items-center px-4 py-3 mx-1">
+          <h1 class="h4 col-10 fw-bold text-center flex-grow-1">{titulo}</h1>
+          <Boton texto="Alertas" href="/consulta" clases="px-2 col-2 d-flex" variante="danger" />
+        </header>
+        <main class="flex-grow-1 p-4">
+          <slot />
+        </main>
+      </div>
+    </div>
+    <script is:inline src="/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

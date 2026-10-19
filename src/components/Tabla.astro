@@ -1,0 +1,37 @@
+---
+// src/components/Tabla.astro
+interface Props {
+  columnas: string[];
+  filas?: (string | number)[][];
+}
+const { columnas, filas = [] } = Astro.props;
+---
+
+<div class="table-responsive">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        {columnas.map((c) => (
+          <th>{c}</th>
+        ))}
+      </tr>
+    </thead>
+
+    <tbody>
+      {filas.map((fila) => (
+        <tr>
+          {fila.map((celda) => (
+            <td>{celda}</td>
+          ))}
+        </tr>
+      ))}
+      {filas.length === 0 && (
+        <tr>
+          <td colspan={columnas.length} class="text-center text-muted">
+            Sin registros.
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>

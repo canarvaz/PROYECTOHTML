@@ -1,0 +1,31 @@
+---
+// src/components/Navtabfilljustify.astro
+interface Props {
+  activo: string;
+}
+
+const { activo } = Astro.props;
+
+const categorias = [
+  { href: "/ordenes/todos", label: "Todas las órdenes" },
+  { href: "/ordenes/moviles", label: "Moviles" },
+  { href: "/ordenes/pc", label: "Pc/Portatil" },
+  { href: "/ordenes/impresoras", label: "Impresion" },
+  { href: "/ordenes/monitores", label: "TV/Monitores" },
+  { href: "/ordenes/otros", label: "Otros" },
+];
+---
+
+<ul class="nav nav-underline nav-fill border-bottom pb-3">
+  {categorias.map((m) => (
+    <li class="nav-item">
+      <a
+        href={m.href}
+        class={`nav-link ${m.href === activo ? "active " : ""}`}
+        aria-current="page"
+      >
+        {m.label}
+      </a>
+    </li>
+  ))}
+</ul>

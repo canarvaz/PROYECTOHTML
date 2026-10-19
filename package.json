@@ -12,9 +12,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.5"
+    "astro": "^7.4.0",
+    "bootstrap-icons": "^1.13.2"
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
   }
 }

@@ -1,0 +1,11 @@
+---
+// src/components/Columna.astro
+interface Props {
+  clases?: string;
+}
+const { clases = "col mx-auto" } = Astro.props;
+---
+
+<div class=`${clases}`>
+  <slot />
+</div>

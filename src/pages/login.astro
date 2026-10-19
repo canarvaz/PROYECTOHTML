@@ -1,0 +1,52 @@
+---
+import "../styles/bootstrap.min.css";
+
+import Columna from "../components/Columna.astro";
+import Tarjeta from "../components/Tarjeta.astro";
+import Campo from "../components/Campo.astro";
+import Boton from "../components/Boton.astro";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tech Service</title>
+  </head>
+
+  <body class="d-flex flex-column vh-100">
+    <header class="bg-dark text-white p-3">
+      <h1 class="h3 fw-bold text-center flex-grow-1">Tech Service</h1>
+    </header>
+
+    <main class="d-flex flex-grow-1 align-items-center justify-content-center">
+      <div class="row gap-5">
+        <Columna>
+          <Tarjeta titulo="Login Colaboradores" clasetitulo="text-center mb-3" clases="">
+            <form id="login" novalidate>
+              <Campo label="Usuario" id="usario" tipo="email" />
+
+              <Campo label="Contraseña" id="contraseña" tipo="password" />
+              <Boton
+                texto="Olvide mi contraseña"
+                tipo="submit"
+                clases="mx-auto"
+                claseboton="btn-sm"
+                variante="link"
+                href="/recuperar-contraseña"
+              />
+            </form>
+            <Boton texto="Ingresar" tipo="submit" clases="mx-auto mt-3" href="/" />
+          </Tarjeta>
+        </Columna>
+        <Columna clases=" d-flex flex-column align-items-center col">
+          <Tarjeta titulo="Consulta Clientes" clases="d-flex flex-column align-items-center justify-content-center">
+            <span class="my-4 text-center px-2">Ingresa aqui para consultar el estado de tu orden</span>
+            <Boton texto="Consultar Orden" tipo="submit" clases="mx-auto" href="#" />
+          </Tarjeta>
+        </Columna>
+      </div>
+    </main>
+    <script is:inline src="/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

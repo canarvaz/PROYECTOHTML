@@ -1,0 +1,14 @@
+---
+// src/components/Tarjeta.astro
+interface Props {
+  clases?: string;
+  titulo?: string;
+  clasetitulo?: string;
+}
+const { clases = "mb-5 p-4", titulo = "", clasetitulo = "" } = Astro.props;
+---
+
+<div class=`card card-body shadow-sm border-1 rounded-3  ${clases}`>
+  <h2 class=`card-title fw-bold ${clasetitulo}`>{titulo}</h2>
+  <slot />
+</div>

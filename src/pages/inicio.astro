@@ -1,0 +1,68 @@
+---
+import '../styles/bootstrap.min.css';
+import '../styles/bootstrap-icons/font/bootstrap-icons.min.css';
+import Boton from '../components/Boton.astro';
+
+interface Props {
+  titulo: string;
+  activo: string;
+}
+
+const { titulo, activo } = Astro.props;
+
+const modulos = [
+  { href: '/', label: 'Inicio' },
+  { href: '/recepcion', label: 'Recepción' },
+  { href: '/clientes', label: 'Gestión de clientes' },
+  { href: '/ordenes/ordenestodos', label: 'Lista de órdenes' },
+  { href: '/facturacion', label: 'Facturación' },
+  { href: '/reparacion', label: 'Proceso de reparación' },
+  { href: '/admin', label: 'Gestión de usuarios' },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thec Service-{titulo}</title>
+  </head>
+
+  <body>
+    <header class="d-flex d-wrap bg-light fw-bolder py-4 px-4 align-items-center">
+      <div>
+        <a class="navbar-brand fs-4" href="/">
+          <img src="/src/img/logo2.jpg" alt="logo" height="40" class="" /> Tech Service
+        </a>
+      </div>
+
+      <div class="mx-auto fs-4">
+        <span>Recepcion</span>
+      </div>
+
+      <form class="d-flex w-25" role="search" >
+        <campo clases="text-dark" label="Buscar Orden" id="buscar" tipo="search" placeholder="Buscar Orden" required="" />
+
+        
+      </form>
+    </header>
+
+    <div class="d-flex">
+      <nav class="px-3 border-end border-secondary bg-danger">
+        <ul class="nav flex-column gap-1">
+          {modulos.map((m) => (
+            <li class="nav-item">
+              <a href={m.href} class={`nav-link ${m.href === activo ? 'active bg-primary text-white rounded' : 'text-white-50'}`}>
+                {m.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <main class="px-3 border-end border-secondary bg-light">este es el main</main>
+    </div>
+    <script is:inline src="/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

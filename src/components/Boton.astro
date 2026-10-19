@@ -1,0 +1,31 @@
+---
+// src/components/Boton.astro
+interface Props {
+  clases?: string;
+  claseboton?: string;
+  texto: string;
+  tipo?: "submit" | "button";
+  variante?: string;
+  href?: string;
+}
+const {
+  clases = "mx-auto",
+  claseboton = "",
+  texto = "",
+  tipo = "submit",
+  variante = "primary",
+  href = "",
+} = Astro.props;
+---
+
+<div class={`${clases}`}>
+  {href ? (
+    <a href={href} class={`${claseboton} btn btn-${variante}`}>
+      {texto}
+    </a>
+  ) : (
+    <button type={tipo} class={`${claseboton} btn btn-${variante}`}>
+      {texto}
+    </button>
+  )}
+</div>

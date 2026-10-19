@@ -1,0 +1,37 @@
+---
+// src/components/Selector.astro
+interface Props {
+  label: string;
+  id: string;
+  opciones: string[];
+  requerido?: boolean;
+  mensaje?: string;
+  classExtra?: string;
+}
+
+const {
+  label,
+  id,
+  opciones,
+  requerido = true,
+  mensaje,
+  classExtra,
+} = Astro.props;
+---
+
+<div class=`mb-3 ${classExtra}`>
+  <label for={id} class="form-label fw-bold">
+    {label}
+  </label>
+  <select class="form-select" id={id} required={requerido}>
+    <option value="" disabled selected>
+      Seleccionar
+    </option>
+    {opciones.map((opcion) => (
+      <option value={opcion}>{opcion}</option>
+    ))}
+  </select>
+  <div class="invalid-feedback">
+    {mensaje ?? `Por favor selecciona ${label.toLowerCase()}.`}
+  </div>
+</div>
