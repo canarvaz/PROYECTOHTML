@@ -1,11 +1,55 @@
 ---
-import AppLayout from "../layouts/AppLayout.astro";
+import Dashboard from "../layouts/Dashboard.astro";
 import Campo from "../components/Campo.astro";
+import Tarjeta from "../components/Tarjeta.astro";
+import Columna from "../components/Columna.astro";
 import Boton from "../components/Boton.astro";
 import EntradaTexto from "../components/EntradaTexto.astro";
 import Selector from "../components/Selector.astro";
 ---
 
-<AppLayout titulo="Recepción" activo="/recepcion">
-
-</AppLayout>
+<Dashboard titulo="Recepción" activo="/recepcion">
+  <div class="row gap-2">
+    <Columna clases="col-md-6">
+      <Tarjeta titulo="Cliente" clasetitulo="text-center">
+        <form>
+          <div class="row d-flex flex-wrap ">
+            <Columna >
+              <label for="" class="form-label">
+                Documento
+                </label>
+              <div class="d-flex gap-1 mb-3">
+                
+                <input type="search" class="form-control" placeholder="# de cedula" aria-label="Campo para numero de documento" />
+                <Boton
+                  texto={<i class="bi bi-search"></i>}
+                  tipo="submit"
+                  clases=""
+                  claseboton="btn-primary"
+                  href="#"
+                  aria-label="Boton para buscar cliente por numero de documento"
+                />
+              </div>
+              
+              <Campo label="Nombre" id="nombre" tipo="text" placeholder="" required="required" />
+            </Columna>
+            <Columna clases="col-md-6">
+              <Campo label="Teléfono" id="telefono" tipo="tel" placeholder="" required="required" />
+              <Campo label="Email" id="email" tipo="email" placeholder="" required="required" />
+            </Columna>
+          </div>
+        </form>
+      </Tarjeta>
+    </Columna>
+    <Columna >
+      <Tarjeta titulo="Cliente" clasetitulo="text-center">
+        <form>
+          <Campo label="Nombre" id="nombre" tipo="text" placeholder="Nombre" required="required" />
+          <Campo label="Email" id="email" tipo="email" placeholder="Email" required="required" />
+          <Campo label="Teléfono" id="telefono" tipo="tel" placeholder="Teléfono" required="required" />
+          <Campo label="numero de documento" id="numerodocumento" tipo="text" placeholder="Numero de documento" required="required" />
+        </form>
+      </Tarjeta>
+    </Columna>
+  </div>
+</Dashboard>

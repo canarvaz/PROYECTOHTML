@@ -1,0 +1,22 @@
+---
+import Dashboard from "../layouts/Dashboard.astro";
+import Tarjeta from "../components/Tarjeta.astro";
+import Tabla from "../components/Tabla.astro";
+import Columna from "../components/Columna.astro";
+
+const columnas = ["Orden", "Cliente", "Total", "Estado"];
+const facturas = [
+  [1, "Juan Pérez", "$150.000", "Pagada"],
+  [2, "María López", "$250.000", "Pendiente"],
+  [3, "Carlos Díaz", "$80.000", "Cancelada"],
+];
+---
+<Dashboard titulo="Facturación" activo="/facturacion">
+  <div class="row">
+    <Columna>
+      <Tarjeta titulo="Facturas" clasetitulo="text-center">
+        <Tabla columnas={columnas} filas={facturas} />
+      </Tarjeta>
+    </Columna>
+  </div>
+</Dashboard>

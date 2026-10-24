@@ -9,25 +9,12 @@ interface Props {
   required: string;
 }
 
-const {
-  clases = "mb-3",
-  label,
-  id,
-  tipo = "text",
-  placeholder = "",
-  required = "required",
-} = Astro.props;
+const { clases = "mb-3", label, id, tipo = "text", placeholder = "", required = "required" } = Astro.props;
 ---
 
 <div class=`form-field ${clases}`>
   <label for={id} class="form-label">
     {label}
   </label>
-  <input
-    type={tipo}
-    class="form-control"
-    id={id}
-    placeholder={placeholder}
-    {required}
-  />
+  <input type={tipo} class="form-control" id={id} placeholder={placeholder} {required} />
 </div>

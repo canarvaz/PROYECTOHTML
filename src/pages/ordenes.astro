@@ -1,0 +1,22 @@
+---
+import Dashboard from "../layouts/Dashboard.astro";
+import Tarjeta from "../components/Tarjeta.astro";
+import Tabla from "../components/Tabla.astro";
+import Columna from "../components/Columna.astro";
+
+const columnas = ["Orden", "Cliente", "Dispositivo", "Estado"];
+const ordens = [
+  [1, "Juan Pérez", "iPhone 12", "En diagnóstico"],
+  [2, "María López", "Samsung S21", "En reparación"],
+  [3, "Carlos Díaz", "MacBook Air", "Listo"],
+];
+---
+<Dashboard titulo="Órdenes" activo="/ordenes">
+  <div class="row">
+    <Columna>
+      <Tarjeta titulo="Lista de órdenes" clasetitulo="text-center">
+        <Tabla columnas={columnas} filas={ordens} />
+      </Tarjeta>
+    </Columna>
+  </div>
+</Dashboard>

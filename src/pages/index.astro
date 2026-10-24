@@ -1,5 +1,5 @@
 ---
-import AppLayout from "../layouts/AppLayout.astro";
+import Dashboard from "../layouts/Dashboard.astro";
 import Tarjeta from "../components/Tarjeta.astro";
 import Tabla from "../components/Tabla.astro";
 import Columna from "../components/Columna.astro";
@@ -17,10 +17,10 @@ const pendientes = [
 ];
 ---
 
-<AppLayout titulo="Inicio" activo="/">
+<Dashboard titulo="Inicio" activo="/">
   <div class="row">
     <Columna>
-      <Tarjeta titulo="Servicios" titulo="Tickets inactivos" clasetitulo="text-center">
+      <Tarjeta titulo="Servicios" titulo="Tickets inactivos" clasetitulo="h4-fluid text-center">
         <Tabla columnas={columnas} filas={sinCambios} />
       </Tarjeta>
     </Columna>
@@ -31,4 +31,4 @@ const pendientes = [
       </Tarjeta>
     </Columna>
   </div>
-</AppLayout>
+</Dashboard>

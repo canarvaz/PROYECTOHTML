@@ -1,0 +1,22 @@
+---
+import Dashboard from "../layouts/Dashboard.astro";
+import Tarjeta from "../components/Tarjeta.astro";
+import Tabla from "../components/Tabla.astro";
+import Columna from "../components/Columna.astro";
+
+const columnas = ["ID", "Nombre", "Rol", "Estado"];
+const usuarios = [
+  [1, "Juan Pérez", "Administrador", "Activo"],
+  [2, "María López", "Técnico", "Activo"],
+  [3, "Carlos Díaz", "Recepcionista", "Inactivo"],
+];
+---
+<Dashboard titulo="Gestión de usuarios" activo="/admin">
+  <div class="row">
+    <Columna>
+      <Tarjeta titulo="Usuarios" clasetitulo="text-center">
+        <Tabla columnas={columnas} filas={usuarios} />
+      </Tarjeta>
+    </Columna>
+  </div>
+</Dashboard>

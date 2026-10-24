@@ -1,0 +1,83 @@
+---
+import "../styles/bootstrap.min.css";
+import "../styles/bootstrap-icons/font/bootstrap-icons.min.css";
+
+import Boton from "../components/Boton.astro";
+
+import Logonombre from "../components/Logonombre.astro";
+
+interface Props {
+  titulo: string;
+  activo: string;
+}
+
+const { titulo, activo } = Astro.props;
+
+const modulos = [
+  { href: "/", label: "Inicio" },
+  { href: "/recepcion", label: "Recepción" },
+  { href: "/clientes", label: "Gestión de clientes" },
+  { href: "/ordenes", label: "Lista de órdenes" },
+  { href: "/facturacion", label: "Facturación" },
+  { href: "/reparacion", label: "Proceso de reparación" },
+  { href: "/admin", label: "Gestión de usuarios" },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thec Service-{titulo}</title>
+  </head>
+
+  <body>
+    <header class="d-flex row bg-dark text-white fw-bolder align-items-center py-1 px-3">
+      <div class="col-2 d-md-none">
+        <button class="btn btn-link p-0 text-decoration-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#dashboardmenu">
+          <i class="bi bi-list fs-4"></i>
+        </button>
+      </div>
+
+      <Logonombre />
+
+      <div class="text-center mx-auto fs-4-fluid col-5 col-sm-auto">
+        <h2>{titulo}</h2>
+      </div>
+
+      <form class="gap-1 d-flex py-2 align-items-center col-11 col-sm-auto" role="search">
+        <input type="search" class="form-control" placeholder="Buscar Orden" aria-label="Campo para numero de orden" />
+        <Boton texto={<i class="bi bi-search"></i>} tipo="submit" clases="" claseboton="btn-primary" href="#" aria-label="Boton para buscar" />
+      </form>
+    </header>
+
+    <div class="d-flex min-vh-100">
+      <nav
+        class="offcanvas-md offcanvas-start aria-labelledby px-3 pt-3 bg-dark text-white"
+
+        id="dashboardmenu"
+        style="width: 240px; min-height: 100vh;"
+        tabindex="-1"
+      >
+        <ul class="nav flex-column gap-1">
+          {modulos.map((m) => (
+            <li class="nav-item">
+              <a href={m.href} class={`nav-link ${m.href === activo ? "active bg-primary text-white rounded" : "text-white-50"}`}>
+                {m.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/login" class="nav-link text-white-50 border-top border-secondary ps-3 pt-3 mt-3">
+          Cerrar sesión
+        </a>
+      </nav>
+
+      <main class="p-4 bg-light flex-grow-1">
+        <slot />
+      </main>
+    </div>
+    <script is:inline src="/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

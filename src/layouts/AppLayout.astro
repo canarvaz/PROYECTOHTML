@@ -27,7 +27,9 @@ const modulos = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tech Service - {titulo}</title>
   </head>
+
   <body>
+    
     <div class="d-flex min-vh-100">
       <!-- Sidebar: altura completa -->
       <nav
@@ -53,10 +55,14 @@ const modulos = [
 
       <!-- Contenido: header + cuerpo -->
       <div class="flex-grow-1 d-flex flex-column">
+
+        
         <header class="row bg-light border-bottom align-items-center px-4 py-3 mx-1">
           <h1 class="h4 col-10 fw-bold text-center flex-grow-1">{titulo}</h1>
           <Boton texto="Alertas" href="/consulta" clases="px-2 col-2 d-flex" variante="danger" />
         </header>
+
+
         <main class="flex-grow-1 p-4">
           <slot />
         </main>
