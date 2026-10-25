@@ -10,12 +10,13 @@ import Selector from "../components/Selector.astro";
 
 <Dashboard titulo="Recepción" activo="/recepcion">
   <div class="row gap-2">
+
+
     <Columna clases="col-md-6">
-      <Tarjeta titulo="Cliente" clasetitulo="text-center">
+      <Tarjeta titulo="Datos de cliente" clasetitulo="text-center">
         <form>
           <div class="row d-flex flex-wrap ">
-            <Columna >
-              <label for="" class="form-label">
+            <label for="" class="form-label">
                 Documento
                 </label>
               <div class="d-flex gap-1 mb-3">
@@ -30,19 +31,22 @@ import Selector from "../components/Selector.astro";
                   aria-label="Boton para buscar cliente por numero de documento"
                 />
               </div>
-              
               <Campo label="Nombre" id="nombre" tipo="text" placeholder="" required="required" />
+            <Campo label="Email" id="email" tipo="email" placeholder="" required="required" />
+            <Columna clases="col-md-6">
+              <Campo label="Numero de celular 1" id="telefono" tipo="tel" placeholder="" required="required" />
             </Columna>
             <Columna clases="col-md-6">
-              <Campo label="Teléfono" id="telefono" tipo="tel" placeholder="" required="required" />
-              <Campo label="Email" id="email" tipo="email" placeholder="" required="required" />
+              <Campo label="Numero de celular 2" id="telefono" tipo="tel" placeholder="" required="required" />
             </Columna>
           </div>
         </form>
       </Tarjeta>
     </Columna>
+
+
     <Columna >
-      <Tarjeta titulo="Cliente" clasetitulo="text-center">
+      <Tarjeta titulo="Datos del dispositivo" clasetitulo="text-center">
         <form>
           <Campo label="Nombre" id="nombre" tipo="text" placeholder="Nombre" required="required" />
           <Campo label="Email" id="email" tipo="email" placeholder="Email" required="required" />

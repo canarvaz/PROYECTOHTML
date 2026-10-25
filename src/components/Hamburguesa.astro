@@ -1,0 +1,16 @@
+---
+interface Props {
+  clases?: string;
+  clasesboton?: string;
+  clasesicono?: string;
+  target?: string;
+}
+
+const { clases = "", clasesboton = "", clasesicono = "", target = "" } = Astro.props;
+---
+
+<div class=`${clases}`>
+  <a class=`btn btn-link ${clasesboton}` type="button" data-bs-toggle="offcanvas" data-bs-target={target}>
+    <i class=`bi  ${clasesicono}`></i>
+  </a>
+</div>

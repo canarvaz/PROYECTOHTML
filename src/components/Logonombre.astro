@@ -5,11 +5,11 @@
     clases?: string;
   }
 
-  const { clases = "col-5 col-sm-auto" } = Astro.props;
+  const { clases = "" } = Astro.props;
 
 ---
 
-      <div class= `h-100 flex-wrap py-2 ${clases}`>
+      <div class= `h-100 row flex-wrap ${clases}`>
         <a class="navbar-brand fs-5" href="/">
           <img src="/src/img/logo2.jpg" alt="logo" height="40" class="" /> Tech Service
         </a>

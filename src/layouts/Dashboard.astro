@@ -3,6 +3,7 @@ import "../styles/bootstrap.min.css";
 import "../styles/bootstrap-icons/font/bootstrap-icons.min.css";
 
 import Boton from "../components/Boton.astro";
+import Hamburguesa from "../components/Hamburguesa.astro";
 
 import Logonombre from "../components/Logonombre.astro";
 
@@ -33,23 +34,28 @@ const modulos = [
   </head>
 
   <body>
-    <header class="d-flex row bg-dark text-white fw-bolder align-items-center py-1 px-3">
-      <div class="col-2 d-md-none">
-        <button class="btn btn-link p-0 text-decoration-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#dashboardmenu">
-          <i class="bi bi-list fs-4"></i>
-        </button>
+    <header class="bg-dark text-white fw-bolder">
+      <div class="d-flex py-2 justify-content-between align-items-center">
+        <div class="container-fluid ps-4 pe-0">
+          <a class="navbar-brand ps-0" href="/">
+            <img src="/src/img/logo2.jpg" alt="logo" height="35" width="55" class="me-2" />
+            Tech Service
+          </a>
+        </div>
+
+        <div class="col-6 col-sm-9 text-center p-0">
+          <h2>{titulo}</h2>
+        </div>
       </div>
 
-      <Logonombre />
+      <div class="bg-light row py-2 px-3 justify-content-center border-bottom border-secondary">
+        <Hamburguesa clases="d-md-none p-0 col-2 d-flex justify-content-center" clasesboton="p-0" clasesicono="bi-list fs-1" target="#dashboardmenu" />
 
-      <div class="text-center mx-auto fs-4-fluid col-5 col-sm-auto">
-        <h2>{titulo}</h2>
+        <form class="gap-1 d-flex align-items-center col-10" role="search">
+          <input type="search" class="form-control" placeholder="Buscar Orden" aria-label="Campo para numero de orden" />
+          <Boton texto={<i class="bi bi-search"></i>} tipo="submit" clases="" claseboton="btn-primary" href="#" aria-label="Boton para buscar" />
+        </form>
       </div>
-
-      <form class="gap-1 d-flex py-2 align-items-center col-11 col-sm-auto" role="search">
-        <input type="search" class="form-control" placeholder="Buscar Orden" aria-label="Campo para numero de orden" />
-        <Boton texto={<i class="bi bi-search"></i>} tipo="submit" clases="" claseboton="btn-primary" href="#" aria-label="Boton para buscar" />
-      </form>
     </header>
 
     <div class="d-flex min-vh-100">
