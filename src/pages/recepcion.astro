@@ -9,29 +9,26 @@ import Selector from "../components/Selector.astro";
 ---
 
 <Dashboard titulo="Recepción" activo="/recepcion">
-  <div class="row gap-2">
-
-
-    <Columna clases="col-md-6">
-      <Tarjeta titulo="Datos de cliente" clasetitulo="text-center">
+  <div class="container row gap-2">
+    <Columna clases="col-md-6 ">
+      <Tarjeta clases="h-100" titulo="Datos de cliente" clasetitulo="text-center fs-4">
         <form>
-          <div class="row d-flex flex-wrap ">
+          <div class="row d-flex flex-wrap">
             <label for="" class="form-label">
-                Documento
-                </label>
-              <div class="d-flex gap-1 mb-3">
-                
-                <input type="search" class="form-control" placeholder="# de cedula" aria-label="Campo para numero de documento" />
-                <Boton
-                  texto={<i class="bi bi-search"></i>}
-                  tipo="submit"
-                  clases=""
-                  claseboton="btn-primary"
-                  href="#"
-                  aria-label="Boton para buscar cliente por numero de documento"
-                />
-              </div>
-              <Campo label="Nombre" id="nombre" tipo="text" placeholder="" required="required" />
+              Documento
+            </label>
+            <div class="d-flex gap-1 mb-3">
+              <input type="search" class="form-control" placeholder="# de cedula" aria-label="Campo para numero de documento" />
+              <Boton
+                texto={<i class="bi bi-search"></i>}
+                tipo="submit"
+                clases=""
+                claseboton="btn-primary"
+                href="#"
+                aria-label="Boton para buscar cliente por numero de documento"
+              />
+            </div>
+            <Campo label="Nombre" id="nombre" tipo="text" placeholder="" required="required" />
             <Campo label="Email" id="email" tipo="email" placeholder="" required="required" />
             <Columna clases="col-md-6">
               <Campo label="Numero de celular 1" id="telefono" tipo="tel" placeholder="" required="required" />
@@ -44,14 +41,14 @@ import Selector from "../components/Selector.astro";
       </Tarjeta>
     </Columna>
 
-
-    <Columna >
-      <Tarjeta titulo="Datos del dispositivo" clasetitulo="text-center">
+    <Columna>
+      <Tarjeta clases="h-100" titulo="Datos del dispositivo" clasetitulo="text-center fs-4">
         <form>
-          <Campo label="Nombre" id="nombre" tipo="text" placeholder="Nombre" required="required" />
-          <Campo label="Email" id="email" tipo="email" placeholder="Email" required="required" />
-          <Campo label="Teléfono" id="telefono" tipo="tel" placeholder="Teléfono" required="required" />
-          <Campo label="numero de documento" id="numerodocumento" tipo="text" placeholder="Numero de documento" required="required" />
+          <Selector label="Tipo" id="tipodispositivo" opciones={["Torre", "Laptop", "Tablet", "Smartphone", "Impresora", "Monitor/TV", "Otro"]} clases="mb-3" />
+          <Campo label="Marca" id="marca" tipo="text" placeholder="" required="required" />
+          <Campo label="Modelo" id="modelo" tipo="text" placeholder="" required="required" />
+          <Campo label="Serial" id="serial" tipo="text" placeholder="" required="required" />
+          <EntradaTexto label="Detalles de ingreso" id="descripcion" placeholder=""  />
         </form>
       </Tarjeta>
     </Columna>

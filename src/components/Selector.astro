@@ -6,7 +6,7 @@ interface Props {
   opciones: string[];
   requerido?: boolean;
   mensaje?: string;
-  classExtra?: string;
+  clases?: string;
 }
 
 const {
@@ -15,11 +15,11 @@ const {
   opciones,
   requerido = true,
   mensaje,
-  classExtra,
+  clases = "",
 } = Astro.props;
 ---
 
-<div class=`mb-3 ${classExtra}`>
+<div class={clases}>
   <label for={id} class="form-label fw-bold">
     {label}
   </label>

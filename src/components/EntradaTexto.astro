@@ -2,23 +2,25 @@
 // src/components/EntradaTexto.astro
 interface Props {
   id: string;
-  titulo?: string;
+  label?: string;
   lineas?: number;
   placeholder?: string;
   requerido?: boolean;
+  clases?: string;
 }
 const {
   id,
-  titulo = "",
+  label = "",
   lineas = 3,
   placeholder = "",
   requerido = true,
+  clases = "",
 } = Astro.props;
 ---
 
-<div class="mb-3 px-2">
+<div class={clases}>
   <label for={id} class="form-label fw-bold">
-    {titulo}
+    {label}
   </label>
   <textarea
     class="form-control"
