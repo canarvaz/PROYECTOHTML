@@ -193,8 +193,9 @@ Las rutas Astro se generan desde `src/pages/`.
 | `/` | `src/pages/index.astro` | Dashboard inicial con datos de ejemplo. |
 | `/login` | `src/pages/login.astro` | Maqueta de acceso del personal. |
 | `/recepcion` | `src/pages/recepcion.astro` | Módulo de recepción. |
-| `/clientes` | `src/pages/clientes.astro` | Gestión de clientes. |
-| `/ordenes` | `src/pages/ordenes.astro` | Lista de órdenes. |
+| `/clientes` | `src/pages/clientes.astro` | Gestión de clientes con CRUD, búsqueda y paginación. |
+| `/ordenes` | `src/pages/ordenes.astro` | Lista de tickets con filtros y reportes (CSV/imprimir). |
+| `/tickets/[id]` | `src/pages/tickets/[id].astro` | Documento detallado del ticket (identificación, fotos, repuestos, diagnóstico y cronología). |
 | `/facturacion` | `src/pages/facturacion.astro` | Módulo de facturación. |
 | `/reparacion` | `src/pages/reparacion.astro` | Proceso de reparación. |
 | `/admin` | `src/pages/admin.astro` | Gestión de usuarios. |
@@ -207,20 +208,21 @@ Las rutas Astro se generan desde `src/pages/`.
 src/
 ├── components/     # Piezas Astro reutilizables: formularios, botones, tablas y tarjetas
 │   └── admin/      # Segmentos independientes de la página /admin (KPIs, filtros, tabla)
-├── data/           # Tipos y funciones de conteo del módulo admin (sin datos fijos)
+├── data/           # Tipos y semillas de datos: admin, clientes y tickets
 ├── layouts/        # Estructura de página compartida (Dashboard.astro)
 ├── pages/          # Rutas y pantallas de la aplicación
 ├── scripts/        # JavaScript de cliente procesado por Astro (empaquetado con hash)
 ├── styles/         # Bootstrap y estilos/iconos locales
 └── assets/         # Recursos procesados por Astro
 public/             # Archivos estáticos servidos sin transformación (incluye JS de Bootstrap)
+└── img/tickets/    # Imágenes de ejemplo para fotos de ingreso y notas de tickets
 ```
 
 ---
 
 ## Avance registrado
 
-> Resumen para retomar el trabajo desde otra máquina. **Última actualización: 2 de noviembre de 2026.**
+> Resumen para retomar el trabajo desde otra máquina. **Última actualización: 3 de noviembre de 2026.**
 
 ### 1. Página `/admin` dividida en componentes independientes
 
@@ -272,6 +274,45 @@ public/             # Archivos estáticos servidos sin transformación (incluye 
 - `pluralizar()` usa regla simple (`+s` / `+es`): no cubre plurales irregulares.
 - Los filtros y el botón "Nuevo usuario" son visuales: aún no filtran ni crean registros (falta JS de filtrado y CRUD).
 - Para llevar los cambios a otra PC hay que **commitear y hacer push** (o copiar el directorio completo).
+
+### 7. Módulo de clientes con CRUD, búsqueda y paginación (3 de noviembre de 2026)
+
+La página `/clientes` pasó de una tabla estática a un módulo completo en `src/pages/clientes.astro` + `src/scripts/clientes.js`:
+
+- **CRUD completo** con modal de formulario (crear/editar) y confirmación al eliminar. El primer botón de cada fila es la columna de acciones (editar ✏️ / eliminar 🗑️).
+- **Columnas:** Acciones (primera) · ID · Nombre · Apellido · Teléfono · Email · Ver tickets (última).
+- **Búsqueda en tiempo real** por ID, nombre, apellido, teléfono y email, con botón × para limpiar y estado vacío diferenciado ("No se encontraron clientes para «término»").
+- **Paginación de 10 en 10** (`«` / numeración / `»`), aplicada después de la búsqueda.
+- **Modal "Ver tickets":** lista de 4 columnas (N° ticket, dispositivo, descripción, botón "Ver detalle" → `/tickets/[id]`), también paginada de 10 en 10.
+- **Persistencia** en `localStorage` con clave `clientes:v1` (semilla en `src/data/clientes.ts`).
+
+### 8. Documento del ticket `/tickets/[id]` (3 de noviembre de 2026)
+
+Ruta dinámica nueva (`src/pages/tickets/[id].astro` + `src/scripts/ticketDetalles.js`) que muestra el ticket como un documento completo, sección por sección:
+
+1. **Identificación:** N° ticket, cliente, fecha de ingreso, saldo pendiente (badge rojo/verde), tipo de dispositivo, marca, modelo, serial y descripción de la falla.
+2. **Fotos de ingreso:** fila de 3 (o menos) con lightbox al hacer clic. Imágenes de ejemplo en `public/img/tickets/`.
+3. **Repuestos asociados:** tabla con cantidad, valor unitario, subtotal, estado (Pendiente/Instalado), total acumulado y modal para agregar repuestos.
+4. **Diagnóstico inicial:** editable mientras esté vacío (recepción/taller); al guardarlo queda **solo lectura**.
+5. **Cronología:** notas y cambios de estado intercalados por fecha/hora, con fotos adjuntas opcionales.
+6. **Formulario de nota siempre disponible** (textarea + fotos opcionales + selector de estado resultante). Al guardar se registra la nota **y** el cambio de estado en el historial.
+7. **Bloqueo al entregar:** con estado `Entregado` se deshabilitan los campos de nota y aparece el botón **"Registrar retorno en garantía"**, que reactiva el ticket en `En diagnóstico`.
+
+El modelo se amplió en `src/data/tickets.ts` (`Ticket`, `HistorialEstado`, `NotaTicket`, `RepuestoTicket`) y se persiste en `localStorage` con clave `tickets:v1`.
+
+### 9. Lista de órdenes con filtros y reportes (3 de noviembre de 2026)
+
+`/ordenes` se reescribió (`src/pages/ordenes.astro` + `src/scripts/ordenes.js`) como lista completa de tickets, **sin CRUD** (solo lectura):
+
+- **Columnas:** N° ticket · Cliente (nombre + ID) · Dispositivo · Descripción (recortada con tooltip) · Estado (badge de color) · Ingreso · **Ver detalle** → `/tickets/[id]`.
+- **Cuatro filtros combinables:** búsqueda libre (ticket, cliente o falla), estado, cliente y tipo de dispositivo; más botón "Limpiar filtros" que aparece solo cuando hay filtros activos.
+- **Paginación de 10 en 10** aplicada después de filtrar.
+- **Reportes:** botón **Exportar CSV** (descarga `ordenes-AAAA-MM-DD.csv` con los tickets **filtrados**, separador `;` y BOM UTF-8 para Excel en español) y botón **Imprimir / PDF** (muestra la tabla completa filtrada sin paginar, con encabezado de reporte y fecha; CSS `@media print` oculta menú, filtros y paginación).
+- Los datos se leen de `tickets:v1` / `clientes:v1`, por lo que los cambios hechos en el documento del ticket se reflejan al recargar.
+
+**Capa de datos nueva:** `src/data/clientes.ts` (tipo `Cliente` + semilla) y `src/data/tickets.ts` (tipos + semilla de 41 tickets con historial, notas y repuestos). Las 41 imágenes de ejemplo de tickets son SVG locales (sin dependencia de red).
+
+**Para reiniciar los datos de ejemplo:** borrar `clientes:v1` y `tickets:v1` del Local Storage del navegador.
 
 ---
 

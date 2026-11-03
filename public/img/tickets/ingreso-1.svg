@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#dee2e6"/>
+  <rect x="8" y="8" width="384" height="284" fill="#ced4da" stroke="#adb5bd" stroke-width="2"/>
+  <circle cx="140" cy="120" r="40" fill="#adb5bd"/>
+  <polygon points="70,230 160,140 250,230" fill="#adb5bd"/>
+  <rect x="270" y="70" width="80" height="120" rx="10" fill="#868e96"/>
+  <text x="200" y="270" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#495057">Foto de ingreso 1</text>
+</svg>

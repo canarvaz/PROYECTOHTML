@@ -1,0 +1,325 @@
+---
+import Dashboard from "../../layouts/Dashboard.astro";
+import Tarjeta from "../../components/Tarjeta.astro";
+import Columna from "../../components/Columna.astro";
+import { clientesIniciales } from "../../data/clientes";
+import { ticketsIniciales, type Ticket } from "../../data/tickets";
+
+export function getStaticPaths() {
+  return ticketsIniciales.map((ticket) => ({
+    params: { id: String(ticket.id) },
+    props: { ticket },
+  }));
+}
+
+const { ticket } = Astro.props as { ticket: Ticket };
+
+const cliente = clientesIniciales.find((c) => c.id === ticket.idCliente);
+const nombreCliente = cliente ? `${cliente.nombre} ${cliente.apellido}` : "Sin cliente";
+
+const coloresEstado: Record<string, string> = {
+  Pendiente: "bg-secondary",
+  "En diagnóstico": "bg-info text-dark",
+  "En reparación": "bg-warning text-dark",
+  Listo: "bg-success",
+  Entregado: "bg-primary",
+};
+
+const money = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
+
+const formatearFecha = (iso: string) => {
+  const [anio, mes, dia] = iso.split("-");
+  return `${dia}/${mes}/${anio}`;
+};
+
+const totalRepuestos = ticket.repuestos.reduce((suma, r) => suma + r.cantidad * r.valor, 0);
+const entregado = ticket.estado === "Entregado";
+
+interface EventoCronologia {
+  tipo: "estado" | "nota";
+  fecha: string;
+  hora: string;
+  estado?: string;
+  nota?: (typeof ticket.notas)[number];
+}
+
+const eventos: EventoCronologia[] = [
+  ...ticket.historial.map((h) => ({
+    tipo: "estado" as const,
+    fecha: h.fecha,
+    hora: h.hora,
+    estado: h.estado,
+  })),
+  ...ticket.notas.map((n) => ({
+    tipo: "nota" as const,
+    fecha: n.fecha,
+    hora: n.hora,
+    nota: n,
+  })),
+].sort((a, b) => `${a.fecha} ${a.hora}`.localeCompare(`${b.fecha} ${b.hora}`));
+---
+<Dashboard titulo={`Ticket ${ticket.numero}`} activo="/clientes">
+  <div class="row pt-3" data-ticket-id={ticket.id}>
+    <div class="col-12 mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <a href="/clientes" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Volver a clientes
+      </a>
+      <span class={`badge fs-6 ${coloresEstado[ticket.estado]}`} id="estado-actual">
+        {ticket.estado}
+      </span>
+    </div>
+
+    <Columna>
+      <Tarjeta titulo={`Documento del ticket ${ticket.numero}`} clasetitulo="text-center">
+        <!-- 1. Identificación -->
+        <h6 class="text-uppercase text-muted border-bottom pb-2 mb-3">Identificación</h6>
+        <div class="table-responsive mb-4">
+          <table class="table table-sm align-middle">
+            <tbody>
+              <tr>
+                <th style="width:180px">N° ticket</th>
+                <td>{ticket.numero}</td>
+                <th style="width:180px">Cliente</th>
+                <td>
+                  <a href="/clientes" class="text-decoration-none">{nombreCliente}</a>
+                </td>
+              </tr>
+              <tr>
+                <th>Fecha de ingreso</th>
+                <td>{formatearFecha(ticket.fechaIngreso)}</td>
+                <th>Saldo pendiente</th>
+                <td>
+                  <span class={`badge ${ticket.saldoPendiente > 0 ? "bg-danger" : "bg-success"}`}>
+                    {ticket.saldoPendiente > 0 ? money.format(ticket.saldoPendiente) : "Sin saldo"}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th>Tipo de dispositivo</th>
+                <td>{ticket.tipoDispositivo}</td>
+                <th>Marca</th>
+                <td>{ticket.marca}</td>
+              </tr>
+              <tr>
+                <th>Modelo</th>
+                <td>{ticket.modelo}</td>
+                <th>Serial</th>
+                <td><code>{ticket.serial}</code></td>
+              </tr>
+              <tr>
+                <th>Descripción de la falla</th>
+                <td colspan="3">{ticket.descripcion}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2. Fotos de ingreso -->
+        <h6 class="text-uppercase text-muted border-bottom pb-2 mb-3">Fotos de ingreso</h6>
+        <div class="row g-2 mb-4" id="fotos-ingreso">
+          {ticket.fotosIngreso.map((foto) => (
+            <div class="col-6 col-md-4">
+              <img
+                src={foto}
+                alt="Foto de ingreso"
+                class="img-fluid rounded border"
+                style="width:100%;height:160px;object-fit:cover;cursor:zoom-in"
+                data-foto={foto}
+              />
+            </div>
+          ))}
+        </div>
+
+        <!-- 3. Repuestos asociados -->
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+          <h6 class="text-uppercase text-muted mb-0">Repuestos asociados</h6>
+          <button type="button" class="btn btn-sm btn-success" id="btn-agregar-repuesto" data-bs-toggle="modal" data-bs-target="#modal-repuesto">
+            <i class="bi bi-plus-lg"></i> Agregar repuesto
+          </button>
+        </div>
+        <div class="table-responsive mb-4">
+          <table class="table table-sm align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Repuesto</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-end">Valor unitario</th>
+                <th class="text-end">Subtotal</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-repuestos">
+              {ticket.repuestos.length === 0 ? (
+                <tr><td colspan="5" class="text-center text-muted">Sin repuestos asociados.</td></tr>
+              ) : (
+                ticket.repuestos.map((r) => (
+                  <tr>
+                    <td>{r.descripcion}</td>
+                    <td class="text-center">{r.cantidad}</td>
+                    <td class="text-end">{money.format(r.valor)}</td>
+                    <td class="text-end">{money.format(r.cantidad * r.valor)}</td>
+                    <td>
+                      <span class={`badge ${r.estado === "Instalado" ? "bg-success" : "bg-secondary"}`}>
+                        {r.estado}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3" class="text-end">Total</th>
+                <th class="text-end" id="total-repuestos">{money.format(totalRepuestos)}</th>
+                <th></th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- 4. Diagnóstico inicial -->
+        <h6 class="text-uppercase text-muted border-bottom pb-2 mb-3">Diagnóstico inicial</h6>
+        <div class="mb-4" id="zona-diagnostico">
+          {ticket.diagnostico ? (
+            <div class="border rounded p-3 bg-light">
+              <p class="mb-0">{ticket.diagnostico}</p>
+              <small class="text-muted">Solo lectura</small>
+            </div>
+          ) : entregado ? (
+            <p class="text-muted mb-0">Pendiente de diagnóstico.</p>
+          ) : (
+            <div>
+              <textarea class="form-control mb-2" rows="3" placeholder="Ingrese el diagnóstico inicial del equipo..." id="input-diagnostico"></textarea>
+              <button type="button" class="btn btn-primary btn-sm" id="guardar-diagnostico">Guardar diagnóstico</button>
+            </div>
+          )}
+        </div>
+
+        <!-- 5. Cronología -->
+        <h6 class="text-uppercase text-muted border-bottom pb-2 mb-3">Cronología del ticket</h6>
+        <div id="cronologia" class="mb-4">
+          {eventos.map((ev) => (
+            <div class="d-flex gap-3 pb-3">
+              <div class="text-end text-muted small" style="min-width:95px">
+                {formatearFecha(ev.fecha)}<br />{ev.hora}
+              </div>
+              <div class="border-start ps-3 flex-grow-1">
+                {ev.tipo === "estado" ? (
+                  <span class={`badge ${coloresEstado[ev.estado!]}`}>
+                    <i class="bi bi-arrow-repeat"></i> Estado: {ev.estado}
+                  </span>
+                ) : (
+                  <div class="bg-light rounded p-2">
+                    <small class="text-muted fw-bold">{ev.nota!.autor}</small>
+                    <p class="mb-1 small">{ev.nota!.texto}</p>
+                    {ev.nota!.fotos.length > 0 && (
+                      <div class="d-flex gap-2">
+                        {ev.nota!.fotos.map((f) => (
+                          <img src={f} alt="Foto de nota" class="rounded border" style="width:80px;height:60px;object-fit:cover;cursor:zoom-in" data-foto={f} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- 6. Formulario de nota -->
+        <div class="card bg-light border-0" id="zona-form-nota">
+          <div class="card-body">
+            <h6 class="card-title">Agregar nota</h6>
+            <div id="aviso-entregado" class={`alert alert-warning py-2 ${entregado ? "" : "d-none"}`}>
+              <i class="bi bi-lock"></i> Ticket entregado: el ingreso de notas está bloqueado.
+            </div>
+            <textarea class="form-control mb-2" rows="3" placeholder="Describa el trabajo realizado, observaciones, etc." id="nota-texto"></textarea>
+            <div class="row g-2 align-items-end">
+              <div class="col-sm-5">
+                <label class="form-label small" for="nota-fotos">Fotos (opcional)</label>
+                <input type="file" class="form-control form-control-sm" id="nota-fotos" multiple accept="image/*" />
+              </div>
+              <div class="col-sm-4">
+                <label class="form-label small" for="nota-estado">Estado resultante</label>
+                <select class="form-select form-select-sm" id="nota-estado">
+                  <option value="Pendiente" selected={ticket.estado === "Pendiente"}>Pendiente</option>
+                  <option value="En diagnóstico" selected={ticket.estado === "En diagnóstico"}>En diagnóstico</option>
+                  <option value="En reparación" selected={ticket.estado === "En reparación"}>En reparación</option>
+                  <option value="Listo" selected={ticket.estado === "Listo"}>Listo</option>
+                  <option value="Entregado" selected={ticket.estado === "Entregado"}>Entregado</option>
+                </select>
+              </div>
+              <div class="col-sm-3 d-grid">
+                <button type="button" class="btn btn-primary btn-sm" id="btn-nota">Guardar nota</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Retorno en garantía -->
+        <div class={`mt-3 ${entregado ? "" : "d-none"}`} id="zona-garantia">
+          <button type="button" class="btn btn-outline-warning" id="btn-garantia">
+            <i class="bi bi-arrow-repeat"></i> Registrar retorno en garantía
+          </button>
+        </div>
+      </Tarjeta>
+    </Columna>
+  </div>
+
+  <!-- Modal: agregar repuesto -->
+  <div class="modal fade" id="modal-repuesto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="form-repuesto" novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title">Agregar repuesto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label" for="rep-descripcion">Descripción</label>
+            <input id="rep-descripcion" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese la descripción del repuesto.</div>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label" for="rep-cantidad">Cantidad</label>
+              <input id="rep-cantidad" type="number" class="form-control" min="1" value="1" />
+              <div class="invalid-feedback">Cantidad mínima 1.</div>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="form-label" for="rep-valor">Valor unitario</label>
+              <input id="rep-valor" type="number" class="form-control" min="0" step="1000" />
+              <div class="invalid-feedback">Ingrese un valor válido.</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: foto ampliada -->
+  <div class="modal fade" id="modal-foto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Vista previa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="foto-ampliada" src="" alt="Foto ampliada" class="img-fluid rounded" />
+        </div>
+      </div>
+    </div>
+  </div>
+</Dashboard>
+
+<script is:inline type="application/json" id="datos-tickets" set:html={JSON.stringify(ticketsIniciales)}></script>
+<script src="../../scripts/ticketDetalles.js"></script>

@@ -1,22 +1,136 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
 import Tarjeta from "../components/Tarjeta.astro";
-import Tabla from "../components/Tabla.astro";
 import Columna from "../components/Columna.astro";
-
-const columnas = ["Nombre", "Teléfono", "Estado"];
-const clientes = [
-  [1, "Juan Pérez", "3101234567", "Activo"],
-  [2, "María López", "3107654321", "Activo"],
-  [3, "Carlos Díaz", "3112345678", "Inactivo"],
-];
+import { clientesIniciales } from "../data/clientes";
+import { ticketsIniciales } from "../data/tickets";
 ---
 <Dashboard titulo="Clientes" activo="/clientes">
   <div class="row pt-3">
     <Columna>
-      <Tarjeta titulo="Gestión de clientes" clasetitulo="text-center">
-        <Tabla columnas={columnas} filas={clientes} />
+      <Tarjeta clasetitulo="m-0">
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+          <div class="input-group" style="max-width: 380px;">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Buscar por id, nombre, teléfono o email"
+              aria-label="Buscar clientes"
+              data-buscar-clientes
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary d-none"
+              aria-label="Limpiar búsqueda"
+              data-limpiar-busqueda
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <button type="button" class="btn btn-success" data-nuevo-cliente>
+            <i class="bi bi-plus-lg"></i> Nuevo cliente
+          </button>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3 px-4">Acciones</th>
+                  <th class="py-3 px-4">ID</th>
+                  <th class="py-3 px-4">Nombre</th>
+                  <th class="py-3 px-4">Apellido</th>
+                  <th class="py-3 px-4">Teléfono</th>
+                  <th class="py-3 px-4">Email</th>
+                  <th class="py-3 px-4">Tickets</th>
+                </tr>
+              </thead>
+              <tbody data-cuerpo-clientes></tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+          <small class="text-muted" data-info-clientes></small>
+          <ul class="pagination pagination-sm mb-0" data-paginacion-clientes></ul>
+        </nav>
       </Tarjeta>
     </Columna>
   </div>
+
+  <!-- Modal: crear / editar cliente -->
+  <div class="modal fade" id="modal-cliente" tabindex="-1" aria-labelledby="titulo-modal-cliente" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" data-form-cliente novalidate>
+        <div class="modal-header">
+          <h5 class="modal-title" id="titulo-modal-cliente" data-titulo-formulario>Nuevo cliente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" />
+          <div class="mb-3">
+            <label class="form-label" for="cliente-nombre">Nombre</label>
+            <input id="cliente-nombre" name="nombre" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el nombre.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="cliente-apellido">Apellido</label>
+            <input id="cliente-apellido" name="apellido" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el apellido.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="cliente-telefono">Teléfono</label>
+            <input id="cliente-telefono" name="telefono" type="tel" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese un teléfono válido (7 a 15 dígitos).</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="cliente-email">Email</label>
+            <input id="cliente-email" name="email" type="email" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese un email válido.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: tickets del cliente -->
+  <div class="modal fade" id="modal-tickets" tabindex="-1" aria-labelledby="titulo-modal-tickets" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="titulo-modal-tickets">Tickets de <span data-nombre-cliente-tickets></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>N° ticket</th>
+                  <th>Dispositivo</th>
+                  <th>Descripción</th>
+                  <th class="text-end">Detalle</th>
+                </tr>
+              </thead>
+              <tbody data-cuerpo-tickets></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between flex-wrap gap-2">
+          <small class="text-muted" data-info-tickets></small>
+          <ul class="pagination pagination-sm mb-0" data-paginacion-tickets></ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </Dashboard>
+
+<script is:inline type="application/json" id="datos-clientes" set:html={JSON.stringify(clientesIniciales)}></script>
+<script is:inline type="application/json" id="datos-tickets" set:html={JSON.stringify(ticketsIniciales)}></script>
+<script src="../scripts/clientes.js"></script>

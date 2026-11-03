@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#d0e2f0"/>
+  <rect x="8" y="8" width="384" height="284" fill="#bcd4ea" stroke="#9dbdd6" stroke-width="2"/>
+  <rect x="120" y="60" width="160" height="180" rx="16" fill="#74a5c6"/>
+  <rect x="135" y="80" width="130" height="120" fill="#5b8fb0"/>
+  <circle cx="200" cy="222" r="10" fill="#e9ecef"/>
+  <text x="200" y="275" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#31506b">Foto de ingreso 2</text>
+</svg>

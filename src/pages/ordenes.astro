@@ -1,22 +1,156 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
 import Tarjeta from "../components/Tarjeta.astro";
-import Tabla from "../components/Tabla.astro";
 import Columna from "../components/Columna.astro";
+import { clientesIniciales } from "../data/clientes";
+import { ticketsIniciales, flujoEstados } from "../data/tickets";
 
-const columnas = ["Orden", "Cliente", "Dispositivo", "Estado"];
-const ordens = [
-  [1, "Juan Pérez", "iPhone 12", "En diagnóstico"],
-  [2, "María López", "Samsung S21", "En reparación"],
-  [3, "Carlos Díaz", "MacBook Air", "Listo"],
-];
+const tiposDispositivo = [...new Set(ticketsIniciales.map((t) => t.tipoDispositivo))].sort();
 ---
-<Dashboard titulo="Órdenes" activo="/ordenes">
-  <div class="row">
+<Dashboard titulo="Tickets" activo="/ordenes">
+  <div class="row pt-3">
     <Columna>
-      <Tarjeta titulo="Lista de órdenes" clasetitulo="text-center">
-        <Tabla columnas={columnas} filas={ordens} />
+      <Tarjeta clasetitulo="m-0">
+        <!-- Filtros + reportes -->
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3" data-barra-herramientas>
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+
+            <div>
+              <h6>Buscar</h6>
+            <div class="input-group m-auto col" style="width:auto;">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Ticket, cliente o falla"
+                aria-label="Buscar tickets"
+                data-buscar-ordenes
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary d-none"
+                aria-label="Limpiar búsqueda"
+                data-limpiar-busqueda
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+            </div>
+
+            <div>
+              <h6>Estados</h6>
+            <select class="form-select m-auto col" style="width:auto" aria-label="Filtrar por estado" data-filtro-estado>
+              <option value="">Todos</option>
+              {flujoEstados.map((estado) => <option value={estado}>{estado}</option>)}
+            </select>
+            </div>
+
+            <div>
+              <h6>Clientes</h6>
+            <select class="form-select m-auto col" style="width:auto" aria-label="Filtrar por cliente" data-filtro-cliente>
+              <option value="">Todos</option>
+              {clientesIniciales.map((c) => (
+                <option value={c.id}>{c.id} — {c.nombre} {c.apellido}</option>
+              ))}
+            </select>
+            </div>
+
+            <div>
+              <h6>Dispositivos</h6>
+            <select class="form-select m-auto col" style="width:auto" aria-label="Filtrar por tipo de dispositivo" data-filtro-tipo>
+              <option value="">Todos</option>
+              {tiposDispositivo.map((tipo) => <option value={tipo}>{tipo}</option>)}
+            </select>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary d-none"
+              data-limpiar-filtros
+              title="Restablecer todos los filtros"
+            >
+              <i class="bi bi-funnel"></i> Limpiar filtros
+            </button>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-success" data-exportar-csv title="Descargar los tickets filtrados en formato CSV">
+              <i class="bi bi-file-earmark-spreadsheet"></i> Exportar CSV
+            </button>
+            <button type="button" class="btn btn-outline-primary" data-imprimir title="Imprimir o guardar como PDF">
+              <i class="bi bi-printer"></i> Imprimir / PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Encabezado visible solo al imprimir -->
+        <div class="d-none" id="cabecera-impresion">
+          <h4 class="text-center mb-1">Reporte de órdenes</h4>
+          <p class="text-center text-muted small mb-3">
+            Generado el <span id="fecha-reporte"></span> — <span id="conteo-reporte"></span>
+          </p>
+        </div>
+
+        <!-- Tabla -->
+        <div class="card border-0 shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="tabla-ordenes">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3 px-4">N° ticket</th>
+                  <th class="py-3 px-4">Cliente</th>
+                  <th class="py-3 px-4">Dispositivo</th>
+                  <th class="py-3 px-4">Descripción</th>
+                  <th class="py-3 px-4">Estado</th>
+                  <th class="py-3 px-4">Ingreso</th>
+                  <th class="py-3 px-4">Detalle</th>
+                </tr>
+              </thead>
+              <tbody data-cuerpo-ordenes></tbody>
+            </table>
+          </div>
+        </div>
+
+        <nav class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3" data-zona-paginacion>
+          <small class="text-muted" data-info-ordenes></small>
+          <ul class="pagination pagination-sm mb-0" data-paginacion-ordenes></ul>
+        </nav>
       </Tarjeta>
     </Columna>
   </div>
 </Dashboard>
+
+<script is:inline type="application/json" id="datos-tickets" set:html={JSON.stringify(ticketsIniciales)}></script>
+<script is:inline type="application/json" id="datos-clientes" set:html={JSON.stringify(clientesIniciales)}></script>
+<script src="../scripts/ordenes.js"></script>
+
+<style is:inline>
+  @media print {
+    /* Oculta todo menos la tabla filtrada y el encabezado del reporte */
+    .offcanvas,
+    header,
+    [data-zona-paginacion],
+    [data-barra-herramientas] {
+      display: none !important;
+    }
+    #cabecera-impresion.d-none {
+      display: block !important;
+    }
+    main {
+      padding: 0 !important;
+      background: #fff !important;
+    }
+    .card {
+      box-shadow: none !important;
+    }
+    #tabla-ordenes thead {
+      display: table-header-group;
+    }
+    #tabla-ordenes tr {
+      page-break-inside: avoid;
+    }
+    body {
+      background: #fff !important;
+    }
+  }
+</style>
