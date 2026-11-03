@@ -82,7 +82,7 @@ function btnWhatsApp(telefono, mensaje, etiqueta = "WhatsApp") {
       href="${linkWhatsApp(telefono, mensaje)}"
       target="_blank"
       rel="noopener noreferrer"
-      class="btn btn-sm btn-success"
+      class="btn btn-sm btn-success btn-whatsapp-sm"
       title="${etiqueta}"
     >
       <i class="bi bi-whatsapp"></i> ${etiqueta}
@@ -123,7 +123,7 @@ const infoListos = document.getElementById("info-listos");
 function renderListos() {
   if (listosRaw.length === 0) {
     cuerpoListos.innerHTML =
-      '<tr><td colspan="5" class="py-3 px-4 text-center text-muted">Sin registros.</td></tr>';
+      '<tr><td colspan="5" class="py-1 px-1 text-center text-muted">Sin registros.</td></tr>';
     infoListos.textContent = "Sin tickets listos para recoger.";
     return;
   }
@@ -139,11 +139,11 @@ function renderListos() {
 
       return `
       <tr>
-        <td class="py-3 px-4 fw-bold">${escapar(t.numero)}</td>
-        <td class="py-3 px-4">${escapar(nombre)}<br><small class="text-muted">${escapar(t.idCliente)}</small></td>
-        <td class="py-3 px-4">${escapar(t.dispositivo)}</td>
-        <td class="py-3 px-4 text-truncate" style="max-width:260px" title="${escapar(u ? u.texto : "Sin notas")}">${escapar(nota)}</td>
-        <td class="py-3 px-4 text-center">${btnWhatsApp(telefono, mensaje)}</td>
+        <td class="py-1 px-1 fw-bold">${escapar(t.numero)}</td>
+        <td class="py-1 px-1">${escapar(nombre)}<br><small class="text-muted">${escapar(t.idCliente)}</small></td>
+        <td class="py-1 px-1">${escapar(t.dispositivo)}</td>
+        <td class="py-1 px-1 text-truncate" style="max-width:260px" title="${escapar(u ? u.texto : "Sin notas")}">${escapar(nota)}</td>
+        <td class="py-1 px-1 text-center">${btnWhatsApp(telefono, mensaje)}</td>
       </tr>`;
     })
     .join("");
@@ -159,7 +159,7 @@ const infoSinAvances = document.getElementById("info-sinavances");
 function renderSinAvances() {
   if (sinAvancesRaw.length === 0) {
     cuerpoSinAvances.innerHTML =
-      '<tr><td colspan="6" class="py-3 px-4 text-center text-muted">Sin registros.</td></tr>';
+      '<tr><td colspan="6" class="py-1 px-1 text-center text-muted">Sin registros.</td></tr>';
     infoSinAvances.textContent = "Todos los tickets tienen avances recientes o ya fueron entregados.";
     return;
   }
@@ -180,12 +180,12 @@ function renderSinAvances() {
 
       return `
       <tr>
-        <td class="py-3 px-4 fw-bold">${escapar(t.numero)}</td>
-        <td class="py-3 px-4">${escapar(nombre)}<br><small class="text-muted">${escapar(t.idCliente)}</small></td>
-        <td class="py-3 px-4">${escapar(t.dispositivo)}</td>
-        <td class="py-3 px-4 text-truncate" style="max-width:260px" title="${escapar(u ? u.texto : "Sin notas")}">${escapar(nota)}</td>
-        <td class="py-3 px-4 text-center"><span class="badge ${claseDias}">${dias} día${dias !== 1 ? "s" : ""}</span></td>
-        <td class="py-3 px-4 text-center">${btnWhatsApp(telefono, mensaje)}</td>
+        <td class="py-1 px-1 fw-bold">${escapar(t.numero)}</td>
+        <td class="py-1 px-1">${escapar(nombre)}<br><small class="text-muted">${escapar(t.idCliente)}</small></td>
+        <td class="py-1 px-1">${escapar(t.dispositivo)}</td>
+        <td class="py-1 px-1 text-truncate" style="max-width:260px" title="${escapar(u ? u.texto : "Sin notas")}">${escapar(nota)}</td>
+        <td class="py-1 px-1 text-center"><span class="badge ${claseDias}">${dias} día${dias !== 1 ? "s" : ""}</span></td>
+        <td class="py-1 px-1 text-center">${btnWhatsApp(telefono, mensaje)}</td>
       </tr>`;
     })
     .join("");
