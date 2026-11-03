@@ -1,56 +1,160 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
-import Campo from "../components/Campo.astro";
 import Tarjeta from "../components/Tarjeta.astro";
-import Columna from "../components/Columna.astro";
-import Boton from "../components/Boton.astro";
-import EntradaTexto from "../components/EntradaTexto.astro";
-import Selector from "../components/Selector.astro";
+import { clientesIniciales } from "../data/clientes";
+import { ticketsIniciales } from "../data/tickets";
+
+const tiposDispositivo = ["Torre", "Laptop", "Tablet", "Smartphone", "Impresora", "Monitor/TV", "Otro"];
 ---
-
 <Dashboard titulo="Recepción" activo="/recepcion">
-  <div class="container row gap-2">
-    <Columna clases="col-md-6 ">
-      <Tarjeta clases="h-100" titulo="Datos de cliente" clasetitulo="text-center fs-4">
-        <form>
-          <div class="row d-flex flex-wrap">
-            <label for="" class="form-label">
-              Documento
-            </label>
-            <div class="d-flex gap-1 mb-3">
-              <input type="search" class="form-control" placeholder="# de cedula" aria-label="Campo para numero de documento" />
-              <Boton
-                texto={<i class="bi bi-search"></i>}
-                tipo="submit"
-                clases=""
-                claseboton="btn-primary"
-                href="#"
-                aria-label="Boton para buscar cliente por numero de documento"
-              />
-            </div>
-            <Campo label="Nombre" id="nombre" tipo="text" placeholder="" required="required" />
-            <Campo label="Email" id="email" tipo="email" placeholder="" required="required" />
-            <Columna clases="col-md-6">
-              <Campo label="Numero de celular 1" id="telefono" tipo="tel" placeholder="" required="required" />
-            </Columna>
-            <Columna clases="col-md-6">
-              <Campo label="Numero de celular 2" id="telefono" tipo="tel" placeholder="" required="required" />
-            </Columna>
-          </div>
-        </form>
-      </Tarjeta>
-    </Columna>
+  <form id="form-recepcion" class="row g-3 pt-3" novalidate>
+    <div class="col-12 col-lg-6">
+      <Tarjeta titulo="Datos del cliente" clasetitulo="text-center fs-4" clases="h-100">
+        <label for="documento" class="form-label fw-bold">Documento</label>
+        <div class="input-group has-validation mb-1">
+          <input id="documento" type="search" class="form-control" placeholder="# de cédula" autocomplete="off" />
+          <button type="button" class="btn btn-primary" id="buscar-cliente" aria-label="Buscar cliente por documento">
+            <i class="bi bi-search"></i>
+          </button>
+          <div class="invalid-feedback">Ingrese el número de documento.</div>
+        </div>
+        <div class="mb-3" style="min-height:1.5rem">
+          <span class="badge d-none" id="estado-cliente"></span>
+        </div>
 
-    <Columna>
-      <Tarjeta clases="h-100" titulo="Datos del dispositivo" clasetitulo="text-center fs-4">
-        <form>
-          <Selector label="Tipo" id="tipodispositivo" opciones={["Torre", "Laptop", "Tablet", "Smartphone", "Impresora", "Monitor/TV", "Otro"]} clases="mb-3" />
-          <Campo label="Marca" id="marca" tipo="text" placeholder="" required="required" />
-          <Campo label="Modelo" id="modelo" tipo="text" placeholder="" required="required" />
-          <Campo label="Serial" id="serial" tipo="text" placeholder="" required="required" />
-          <EntradaTexto label="Detalles de ingreso" id="descripcion" placeholder=""  />
-        </form>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input id="nombre" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el nombre.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input id="apellido" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el apellido.</div>
+          </div>
+          <div class="col-12 mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input id="email" type="email" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese un email válido.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="telefono" class="form-label">Celular 1</label>
+            <input id="telefono" type="tel" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese un número válido (7 a 15 dígitos).</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="telefono2" class="form-label">Celular 2 <small class="text-muted">(opcional)</small></label>
+            <input id="telefono2" type="tel" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Número no válido.</div>
+          </div>
+        </div>
       </Tarjeta>
-    </Columna>
+    </div>
+
+    <div class="col-12 col-lg-6">
+      <Tarjeta titulo="Datos del dispositivo" clasetitulo="text-center fs-4" clases="h-100">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="tipodispositivo" class="form-label fw-bold">Tipo</label>
+            <select id="tipodispositivo" class="form-select">
+              <option value="" selected disabled>Seleccionar</option>
+              {tiposDispositivo.map((tipo) => <option value={tipo}>{tipo}</option>)}
+            </select>
+            <div class="invalid-feedback">Seleccione el tipo de dispositivo.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="marca" class="form-label">Marca</label>
+            <input id="marca" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese la marca.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="modelo" class="form-label">Modelo</label>
+            <input id="modelo" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el modelo.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="serial" class="form-label">Serial</label>
+            <input id="serial" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el serial.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="descripcion" class="form-label fw-bold">Falla reportada / detalles de ingreso</label>
+          <textarea id="descripcion" class="form-control" rows="3"></textarea>
+          <div class="invalid-feedback">Describa la falla reportada.</div>
+        </div>
+
+        <div class="mb-2">
+          <label for="fotos-ingreso" class="form-label fw-bold">
+            Fotos de ingreso <small class="text-muted fw-normal">(máximo 5)</small>
+          </label>
+          <input id="fotos-ingreso" type="file" class="form-control" accept="image/*" multiple />
+        </div>
+        <div class="d-flex flex-wrap gap-2" id="preview-ingreso"></div>
+      </Tarjeta>
+    </div>
+
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body d-flex flex-wrap align-items-center justify-content-end gap-2">
+          <div id="alerta" class="alert d-none me-auto mb-0 py-2 flex-grow-1" role="alert"></div>
+          <button type="button" class="btn btn-warning" id="btn-mostrador">
+            <i class="bi bi-shop"></i> Servicio en mostrador
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-crear">
+            <i class="bi bi-ticket-detailed"></i> Crear ticket
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Modal: servicio en mostrador -->
+  <div class="modal fade" id="modal-mostrador" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Servicio en mostrador</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-muted">
+            Registre el diagnóstico y la reparación realizada en sitio. Al guardar se crea el ticket y se envía a caja para el pago.
+          </p>
+          <div class="mb-3">
+            <label for="mostrador-diagnostico" class="form-label fw-bold">Diagnóstico en sitio</label>
+            <textarea id="mostrador-diagnostico" class="form-control" rows="2"></textarea>
+            <div class="invalid-feedback">Ingrese el diagnóstico.</div>
+          </div>
+          <div class="mb-3">
+            <label for="mostrador-reparacion" class="form-label fw-bold">Reparación realizada</label>
+            <textarea id="mostrador-reparacion" class="form-control" rows="3"></textarea>
+            <div class="invalid-feedback">Ingrese la reparación realizada.</div>
+          </div>
+          <div class="mb-3">
+            <label for="mostrador-valor" class="form-label fw-bold">Valor a cobrar (COP)</label>
+            <input id="mostrador-valor" type="number" min="1" step="1000" class="form-control" />
+            <div class="invalid-feedback">Ingrese un valor mayor a cero.</div>
+          </div>
+          <div class="mb-2">
+            <label for="mostrador-fotos" class="form-label fw-bold">
+              Fotos del equipo reparado <small class="text-muted fw-normal">(opcional, máximo 5)</small>
+            </label>
+            <input id="mostrador-fotos" type="file" class="form-control" accept="image/*" multiple />
+          </div>
+          <div class="d-flex flex-wrap gap-2" id="preview-reparacion"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-warning" id="guardar-mostrador">Guardar y pasar a caja</button>
+        </div>
+      </div>
+    </div>
   </div>
 </Dashboard>
+
+<script is:inline type="application/json" id="datos-clientes" set:html={JSON.stringify(clientesIniciales)}></script>
+<script is:inline type="application/json" id="datos-tickets" set:html={JSON.stringify(ticketsIniciales)}></script>
+<script src="../scripts/recepcion.js"></script>

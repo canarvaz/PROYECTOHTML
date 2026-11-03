@@ -1,0 +1,22 @@
+---
+import Dashboard from "../layouts/Dashboard.astro";
+import Tarjeta from "../components/Tarjeta.astro";
+import Columna from "../components/Columna.astro";
+import { clientesIniciales } from "../data/clientes";
+import { ticketsIniciales } from "../data/tickets";
+---
+<Dashboard titulo="Caja" activo="/caja">
+  <div class="row pt-3">
+    <Columna>
+      <Tarjeta titulo="Cobro de servicio" clasetitulo="text-center">
+        <div id="contenido-caja">
+          <p class="text-muted">Cargando...</p>
+        </div>
+      </Tarjeta>
+    </Columna>
+  </div>
+</Dashboard>
+
+<script is:inline type="application/json" id="datos-tickets" set:html={JSON.stringify(ticketsIniciales)}></script>
+<script is:inline type="application/json" id="datos-clientes" set:html={JSON.stringify(clientesIniciales)}></script>
+<script src="../scripts/caja.js"></script>

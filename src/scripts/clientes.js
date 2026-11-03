@@ -31,8 +31,9 @@ const cuerpoTickets = document.querySelector("[data-cuerpo-tickets]");
 const infoTickets = document.querySelector("[data-info-tickets]");
 const paginacionTickets = document.querySelector("[data-paginacion-tickets]");
 
-const CAMPOS = ["nombre", "apellido", "telefono", "email"];
+const CAMPOS = ["documento", "nombre", "apellido", "telefono", "email"];
 const VALIDACIONES = {
+  documento: (v) => v.length >= 5,
   nombre: (v) => v.length > 0,
   apellido: (v) => v.length > 0,
   telefono: (v) => /^[0-9+\s()-]{7,20}$/.test(v),
@@ -76,7 +77,7 @@ function clientesFiltrados() {
   const termino = busqueda.trim().toLowerCase();
   if (!termino) return clientes;
   return clientes.filter((c) =>
-    [c.id, c.nombre, c.apellido, c.telefono, c.email].some((valor) =>
+    [c.id, c.documento, c.nombre, c.apellido, c.telefono, c.email].some((valor) =>
       String(valor).toLowerCase().includes(termino),
     ),
   );
@@ -202,7 +203,7 @@ function abrirFormulario(cliente = null) {
   tituloFormulario.textContent = cliente ? "Editar cliente" : "Nuevo cliente";
   formCliente.elements.id.value = cliente ? cliente.id : "";
   CAMPOS.forEach((campo) => {
-    formCliente.elements[campo].value = cliente ? cliente[campo] : "";
+    formCliente.elements[campo].value = cliente ? cliente[campo] ?? "" : "";
   });
   bootstrap.Modal.getOrCreateInstance(modalCliente).show();
 }

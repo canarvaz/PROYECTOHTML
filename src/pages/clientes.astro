@@ -71,6 +71,11 @@ import { ticketsIniciales } from "../data/tickets";
         <div class="modal-body">
           <input type="hidden" name="id" />
           <div class="mb-3">
+            <label class="form-label" for="cliente-documento">Documento</label>
+            <input id="cliente-documento" name="documento" class="form-control" autocomplete="off" />
+            <div class="invalid-feedback">Ingrese el número de documento.</div>
+          </div>
+          <div class="mb-3">
             <label class="form-label" for="cliente-nombre">Nombre</label>
             <input id="cliente-nombre" name="nombre" class="form-control" autocomplete="off" />
             <div class="invalid-feedback">Ingrese el nombre.</div>

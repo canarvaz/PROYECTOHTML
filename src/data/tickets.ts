@@ -57,6 +57,15 @@ export interface Ticket {
   historial: HistorialEstado[];
   notas: NotaTicket[];
   repuestos: RepuestoTicket[];
+  casillero: string;
+  via: "normal" | "mostrador";
+  servicioMostrador?: ServicioMostrador;
+}
+
+export interface ServicioMostrador {
+  diagnostico: string;
+  reparacion: string;
+  fotosReparacion: string[];
 }
 
 // ---------- Semilla ----------
@@ -179,6 +188,8 @@ export const ticketsIniciales: Ticket[] = cantidadPorCliente.flatMap((cantidad, 
       historial,
       notas,
       repuestos,
+      casillero: `C-${String(id).padStart(3, "0")}`,
+      via: "normal",
     };
   }),
 );
