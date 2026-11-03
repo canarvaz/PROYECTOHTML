@@ -103,7 +103,7 @@ function buscarCliente(id) {
 const totalActivos = tickets.filter((t) => t.estado !== "Entregado").length;
 const listosRaw = tickets.filter((t) => t.estado === "Listo");
 const sinAvancesRaw = tickets.filter((t) => {
-  if (t.estado === "Entregado") return false;
+  if (t.estado === "Entregado" || t.estado === "Listo") return false;
   const u = ultimaEntrada(t);
   return u ? diasDesde(u.fecha) >= 1 : false;
 });
