@@ -1,34 +1,99 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
 import Tarjeta from "../components/Tarjeta.astro";
-import Tabla from "../components/Tabla.astro";
 import Columna from "../components/Columna.astro";
-
-const columnas = ["Ticket", "Cliente", "Estado", "Ultima nota", "Acciones"];
-
-const sinCambios = [
-  [1, "Juan Pérez", "Pendiente", "Se espera que cliente autorice la compra del teclado de repuesto", ""],
-  [2, "María López", "Pendiente", "Aguardando confirmación de costo adicional", ""],
-];
-
-const pendientes = [
-  [1, "Carlos Díaz", "Listo", "Reparación completada, listo para entrega", ""],
-  [2, "Ana García", "Listo", "Diagnóstico finalizado", ""],
-];
+import { ticketsIniciales } from "../data/tickets";
+import { clientesIniciales } from "../data/clientes";
 ---
-
 <Dashboard titulo="Inicio" activo="/">
   <div class="row pt-3">
-    <Columna>
-      <Tarjeta titulo="Servicios" titulo="Tickets inactivos" clasetitulo="h4-fluid text-center">
-        <Tabla columnas={columnas} filas={sinCambios} />
-      </Tarjeta>
-    </Columna>
+    <!-- Métricas -->
+    <div class="col-12 mb-4">
+      <div class="row g-3">
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card text-center border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-muted small text-uppercase fw-bold">Total activos</div>
+              <div class="display-4 fw-bold text-primary" id="metrica-activos">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card text-center border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-muted small text-uppercase fw-bold">Listos para recoger</div>
+              <div class="display-4 fw-bold text-success" id="metrica-listos">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card text-center border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-muted small text-uppercase fw-bold">Sin avances 24h+</div>
+              <div class="display-4 fw-bold text-danger" id="metrica-sinavances">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="card text-center border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-muted small text-uppercase fw-bold">En reparación</div>
+              <div class="display-4 fw-bold text-warning" id="metrica-reparacion">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <Columna>
-      <Tarjeta titulo="Servicios" titulo="Listos para entrega" clasetitulo="text-center">
-        <Tabla columnas={columnas} filas={pendientes} />
-      </Tarjeta>
-    </Columna>
+    <!-- Lista listos para recoger -->
+    <div class="col-12 col-lg-6 mb-4">
+      <Columna>
+        <Tarjeta titulo="Listos para recoger" clasetitulo="text-center">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3 px-4">N° ticket</th>
+                  <th class="py-3 px-4">Cliente</th>
+                  <th class="py-3 px-4">Dispositivo</th>
+                  <th class="py-3 px-4">Última nota</th>
+                  <th class="py-3 px-4 text-center">Contactar</th>
+                </tr>
+              </thead>
+              <tbody id="cuerpo-listos"></tbody>
+            </table>
+          </div>
+          <p class="text-muted small mt-2" id="info-listos"></p>
+        </Tarjeta>
+      </Columna>
+    </div>
+
+    <!-- Lista sin avances 24h+ -->
+    <div class="col-12 col-lg-6 mb-4">
+      <Columna>
+        <Tarjeta titulo="Sin avances (24 h o más)" clasetitulo="text-center">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle table-sm mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3 px-4">N° ticket</th>
+                  <th class="py-3 px-4">Cliente</th>
+                  <th class="py-3 px-4">Dispositivo</th>
+                  <th class="py-3 px-4">Última nota</th>
+                  <th class="py-3 px-4 text-center">Días sin cambios</th>
+                  <th class="py-3 px-4 text-center">Contactar</th>
+                </tr>
+              </thead>
+              <tbody id="cuerpo-sinavances"></tbody>
+            </table>
+          </div>
+          <p class="text-muted small mt-2" id="info-sinavances"></p>
+        </Tarjeta>
+      </Columna>
+    </div>
   </div>
 </Dashboard>
+
+<script is:inline type="application/json" id="datos-tickets" set:html={JSON.stringify(ticketsIniciales)}></script>
+<script is:inline type="application/json" id="datos-clientes" set:html={JSON.stringify(clientesIniciales)}></script>
+<script src="../scripts/inicio.js"></script>
