@@ -1,22 +1,66 @@
 ---
 import Dashboard from "../layouts/Dashboard.astro";
-import Tarjeta from "../components/Tarjeta.astro";
-import Tabla from "../components/Tabla.astro";
-import Columna from "../components/Columna.astro";
+import MetricasUsuarios from "../components/admin/MetricasUsuarios.astro";
+import BarraFiltros from "../components/admin/BarraFiltros.astro";
+import TablaUsuarios from "../components/admin/TablaUsuarios.astro";
+import type { Usuario } from "../data/admin";
 
-const columnas = ["ID", "Nombre", "Rol", "Estado"];
-const usuarios = [
-  [1, "Juan Pérez", "Administrador", "Activo"],
-  [2, "María López", "Técnico", "Activo"],
-  [3, "Carlos Díaz", "Recepcionista", "Inactivo"],
+// ===== Datos del prototipo (editar solo aquí) =====
+const usuarios: Usuario[] = [
+  {
+    iniciales: "AD",
+    nombre: "Ana Domínguez",
+    email: "ana.dominguez@nexo.com",
+    rol: "Administrador",
+    permisos: ["Usuarios", "Roles y permisos"],
+    permisosExtra: 2,
+    estado: "Activo",
+    ultimoAcceso: "30 oct 2026",
+    esTu: true,
+    avatarClase: "bg-primary text-dark",
+  },
+  {
+    iniciales: "CM",
+    nombre: "Carlos Mendoza",
+    email: "carlos.mendoza@nexo.com",
+    rol: "Gestor",
+    permisos: ["Usuarios", "Roles y permisos"],
+    permisosExtra: 1,
+    estado: "Activo",
+    ultimoAcceso: "29 oct 2026",
+    avatarClase: "bg-primary/10 text-primary",
+  },
+  {
+    iniciales: "CM",
+    nombre: "Carlos Mendoza",
+    email: "carlos.mendoza@nexo.com",
+    rol: "Tecnico",
+    permisos: ["Usuarios", "Roles y permisos"],
+    permisosExtra: 1,
+    estado: "Activo",
+    ultimoAcceso: "29 oct 2026",
+    avatarClase: "bg-primary/10 text-primary",
+  },
 ];
+
+// Las opciones del filtro de rol también salen de la tabla.
+const rolesFiltro = ["Todos los roles", ...new Set(usuarios.map((u) => u.rol))];
+const estadosFiltro = ["Todos los estados", "Activo", "Inactivo"];
 ---
-<Dashboard titulo="Gestión de usuarios" activo="/admin">
-  <div class="row">
-    <Columna>
-      <Tarjeta titulo="Usuarios" clasetitulo="text-center">
-        <Tabla columnas={columnas} filas={usuarios} />
-      </Tarjeta>
-    </Columna>
+
+<Dashboard titulo="Gestión de Usuarios" activo="/admin">
+
+  <div class="container-fluid px-1 g-2">
+
+    <!-- MÉTRICAS: se calculan desde la lista de usuarios -->
+    <MetricasUsuarios usuarios={usuarios} />
+
+    <!-- BÚSQUEDA Y FILTROS -->
+    <BarraFiltros roles={rolesFiltro} estados={estadosFiltro} />
+
+    <!-- TABLA DE USUARIOS -->
+    <TablaUsuarios usuarios={usuarios} />
+
   </div>
+
 </Dashboard>

@@ -4,21 +4,21 @@ import Tarjeta from "../components/Tarjeta.astro";
 import Tabla from "../components/Tabla.astro";
 import Columna from "../components/Columna.astro";
 
-const columnas = ["Servicio", "Cliente", "Estado"];
+const columnas = ["Ticket", "Cliente", "Estado", "Ultima nota", "Acciones"];
 
 const sinCambios = [
-  [1, 2, 3],
-  [1, 2, 3],
+  [1, "Juan Pérez", "Pendiente", "Se espera que cliente autorice la compra del teclado de repuesto", ""],
+  [2, "María López", "Pendiente", "Aguardando confirmación de costo adicional", ""],
 ];
 
 const pendientes = [
-  [1, 2, 3],
-  [1, 2, 3],
+  [1, "Carlos Díaz", "Listo", "Reparación completada, listo para entrega", ""],
+  [2, "Ana García", "Listo", "Diagnóstico finalizado", ""],
 ];
 ---
 
 <Dashboard titulo="Inicio" activo="/">
-  <div class="container row">
+  <div class="row pt-3">
     <Columna>
       <Tarjeta titulo="Servicios" titulo="Tickets inactivos" clasetitulo="h4-fluid text-center">
         <Tabla columnas={columnas} filas={sinCambios} />

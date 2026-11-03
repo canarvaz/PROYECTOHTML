@@ -1,0 +1,135 @@
+---
+// src/components/admin/TablaUsuarios.astro
+// Tabla de usuarios: cada fila se genera a partir del arreglo recibido.
+import type { Usuario } from "../../data/admin";
+
+interface Props {
+  usuarios?: Usuario[];
+}
+
+const { usuarios = [] } = Astro.props;
+
+const columnas = [
+  "Usuario",
+  "Rol",
+  "Permisos",
+  "Estado",
+  "Último acceso",
+  "Acciones",
+];
+---
+
+<div class="card border-0 shadow-sm ">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          {columnas.map((columna, i) => (
+            <th class={`py-3 px-4${i === columnas.length - 1 ? " text-end" : ""}`}>
+              {columna}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {usuarios.length === 0 && (
+          <tr>
+            <td colspan={columnas.length} class="py-3 px-4 text-center text-muted">
+              Sin registros.
+            </td>
+          </tr>
+        )}
+
+        {usuarios.map((usuario, i) => {
+          const activo = usuario.estado === "Activo";
+          const tonoAvatar = usuario.avatarClase ?? "bg-primary text-dark";
+          const tonoEstado = activo ? "text-success" : "text-danger";
+          const puntoEstado = activo ? "bg-success" : "bg-danger";
+          // Identidad estable de la fila para localStorage (sobrevive a correos repetidos)
+          const idEstado = `${usuario.email}|${usuario.rol}`;
+
+          return (
+            <tr
+              class="hover:bg-light/50 transition"
+              data-estado-id={idEstado}
+              data-estado={usuario.estado}
+              data-rol={usuario.rol}
+            >
+              <td class="py-3 px-4">
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class={`rounded-circle ${tonoAvatar} fw-semibold small d-flex align-items-center justify-center`}
+                    style="width:36px;height:36px;"
+                  >
+                    {usuario.iniciales}
+                  </div>
+                  <div>
+                    {usuario.esTu ? (
+                      <div class="d-flex align-items-center gap-1.5">
+                        <span class="fw-bold">{usuario.nombre}</span>
+                        <span class="small badge bg-secondary-subtle text-dark">Tú</span>
+                      </div>
+                    ) : (
+                      <span class="fw-bold d-block">{usuario.nombre}</span>
+                    )}
+                    <p class="small text-muted mb-0">{usuario.email}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3 px-4">{usuario.rol}</td>
+              <td class="py-3 px-4">
+                <div class="d-flex align-items-center gap-1 flex-wrap">
+                  {usuario.permisos.map((permiso) => (
+                    <span class="badge bg-secondary-subtle text-dark small">{permiso}</span>
+                  ))}
+                  {usuario.permisosExtra > 0 && (
+                    <span class="badge bg-secondary text-dark small">
+                      +{usuario.permisosExtra}
+                    </span>
+                  )}
+                </div>
+              </td>
+              <td class="py-3 px-4">
+                <div class="form-check form-switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id={`estado-${i}`}
+                    checked={activo}
+                    disabled={usuario.esTu}
+                    data-estado-toggle
+                    data-id={idEstado}
+                    title={usuario.esTu ? "No puedes desactivar tu propia cuenta" : undefined}
+                  />
+                  <label class={`form-check-label small fw-bold ${tonoEstado}`} for={`estado-${i}`}>
+                    <span
+                      class={`${puntoEstado} rounded-circle me-1`}
+                      data-estado-punto
+                      style="width:8px;height:8px;"
+                    ></span>
+                    <span data-estado-texto>{usuario.estado}</span>
+                  </label>
+                </div>
+              </td>
+              <td class="py-3 px-4 small text-muted">{usuario.ultimoAcceso}</td>
+              <td class="py-3 px-4 text-end">
+                <div class="d-flex align-items-center justify-content-end gap-2 text-secondary">
+                  <a href="#" class="p-2 hover:text-dark hover:bg-light rounded text-decoration-none" aria-label="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <a href="#" class="p-2 text-danger hover:text-dark hover:bg-light rounded text-decoration-none" aria-label="Eliminar">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Lógica de los switches de estado: recalcula KPIs y persiste en localStorage -->
+<script src="../../scripts/adminEstados.js"></script>

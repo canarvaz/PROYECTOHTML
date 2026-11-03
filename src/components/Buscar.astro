@@ -1,0 +1,17 @@
+---
+// src/components/Buscar.astro
+import "../styles/bootstrap.min.css";
+import "../styles/bootstrap-icons/font/bootstrap-icons.min.css";
+
+import Boton from "./Boton.astro";
+
+
+
+---
+
+<div class="bg-light row py-1 px-3 justify-content-center ">
+  <form class="gap-1 d-flex align-items-center col-10" role="search">
+    <input type="search" class="form-control" placeholder="Buscar Orden" aria-label="Campo para numero de orden" />
+    <Boton texto={<i class="bi bi-search"></i>} tipo="submit" clases="" claseboton="btn-primary" href="#" aria-label="Boton para buscar" />
+  </form>
+</div>

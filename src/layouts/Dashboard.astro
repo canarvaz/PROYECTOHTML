@@ -34,39 +34,15 @@ const modulos = [
   </head>
 
   <body>
-    <header class="bg-dark text-white fw-bolder">
-      <div class="d-flex py-2 justify-content-between align-items-center">
-        <div class="container-fluid ps-4 pe-0">
-          <a class="navbar-brand ps-0" href="/">
-            <img src="/src/img/logo2.jpg" alt="logo" height="35" width="55" class="me-2" />
-            Tech Service
-          </a>
-        </div>
-
-        <div class="col-6 col-sm-9 col-md-10 text-center p-0">
-          <h2>{titulo}</h2>
-        </div>
-      </div>
-
-      <div class="bg-light row py-2 px-3 justify-content-center border-bottom border-secondary">
-        <Hamburguesa clases="d-md-none p-0 col-2 d-flex justify-content-center" clasesboton="p-0" clasesicono="bi-list fs-1" target="#dashboardmenu" />
-
-        <form class="gap-1 d-flex align-items-center col-10" role="search">
-          <input type="search" class="form-control" placeholder="Buscar Orden" aria-label="Campo para numero de orden" />
-          <Boton texto={<i class="bi bi-search"></i>} tipo="submit" clases="" claseboton="btn-primary" href="#" aria-label="Boton para buscar" />
-        </form>
-      </div>
-    </header>
-
-    <div class="d-flex min-vh-100">
+    <div class="container-fluid row p-0 m-0 vh-100">
       <nav
-        class="offcanvas-md offcanvas-start aria-labelledby px-3 pt-3 bg-dark text-white"
-
+        class="offcanvas-lg col-lg-2 offcanvas-start bg-dark text-white pt-3 ps-1 pe-1"
         id="dashboardmenu"
-        style="width: 240px; min-height: 100vh;"
+        aria-label="Menú principal"
         tabindex="-1"
       >
-        <ul class="nav flex-column gap-1">
+        <Logonombre />
+        <ul class="nav flex-column gap-1 pt-3">
           {modulos.map((m) => (
             <li class="nav-item">
               <a href={m.href} class={`nav-link ${m.href === activo ? "active bg-primary text-white rounded" : "text-white-50"}`}>
@@ -80,9 +56,24 @@ const modulos = [
         </a>
       </nav>
 
-      <main class="p-4 bg-light flex-grow-1">
-        <slot />
-      </main>
+      <div class="col-lg-10 p-0">
+        <header class="bg-dark row text-white fw-bolder m-0">
+          <Hamburguesa
+            clases="d-lg-none col-2 d-flex justify-content-center m-0 p-0 "
+            clasesboton="p-0 m-auto"
+            clasesicono="bi-list fs-1"
+            target="#dashboardmenu"
+          />
+
+          <div class=" py-3 m-0 col-10 col-lg-12">
+            <h2 class="text-center m-0">{titulo}</h2>
+          </div>
+        </header>
+
+        <main class="px-2 bg-light flex-grow-1">
+          <slot class="m-0" />
+        </main>
+      </div>
     </div>
     <script is:inline src="/js/bootstrap.bundle.min.js"></script>
   </body>

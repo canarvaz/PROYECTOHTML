@@ -7,10 +7,20 @@ interface Props {
 }
 
 const { clases = "", clasesboton = "", clasesicono = "", target = "" } = Astro.props;
+
+// aria-controls espera un id, no un selector ("#dashboardmenu" -> "dashboardmenu")
+const destino = target.replace(/^#/, "");
 ---
 
 <div class=`${clases}`>
-  <a class=`btn btn-link ${clasesboton}` type="button" data-bs-toggle="offcanvas" data-bs-target={target}>
+  <button
+    type="button"
+    class=`btn btn-link ${clasesboton}`
+    data-bs-toggle="offcanvas"
+    data-bs-target={target}
+    aria-controls={destino}
+    aria-label="Menú de navegación"
+  >
     <i class=`bi  ${clasesicono}`></i>
-  </a>
+  </button>
 </div>

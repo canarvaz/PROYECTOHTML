@@ -1,0 +1,34 @@
+---
+// src/components/admin/MetricasUsuarios.astro
+// Fila de tarjetas de métricas: se generan desde la lista de usuarios.
+import Columna from "../Columna.astro";
+import Tarjeta from "../Tarjeta.astro";
+import { calcularMetricas } from "../../data/admin";
+import type { Metrica, Usuario } from "../../data/admin";
+
+interface Props {
+  usuarios?: Usuario[];
+  metricas?: Metrica[];
+}
+
+const { usuarios = [], metricas } = Astro.props;
+
+// Si no se pasan métricas explícitas, se calculan desde la tabla.
+const kpis: Metrica[] = metricas ?? calcularMetricas(usuarios);
+---
+
+<div class="d-flex row py-2">
+  {kpis.map((metrica) => (
+    <Columna>
+      <Tarjeta clases="p-2" clasetitulo="m-0">
+        <span
+          class="h2 mb-1 text-center text-dark d-block"
+          data-kpi-valor
+          data-kpi={metrica.clave}
+          data-rol={metrica.rol}
+        >{metrica.valor}</span>
+        <p class="text-muted text-center small mb-0">{metrica.etiqueta}</p>
+      </Tarjeta>
+    </Columna>
+  ))}
+</div>
