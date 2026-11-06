@@ -14,6 +14,8 @@ const form = document.getElementById("form-recepcion");
 const inputDocumento = document.getElementById("documento");
 const badgeCliente = document.getElementById("estado-cliente");
 const alerta = document.getElementById("alerta");
+const alertaCliente = document.getElementById("alerta-cliente");
+const btnGuardarCliente = document.getElementById("btn-guardar-cliente");
 const inputFotosIngreso = document.getElementById("fotos-ingreso");
 const previewIngreso = document.getElementById("preview-ingreso");
 const btnMostrador = document.getElementById("btn-mostrador");
@@ -25,6 +27,11 @@ const btnGuardarMostrador = document.getElementById("guardar-mostrador");
 const CAMPOS_CLIENTE = ["documento", "nombre", "apellido", "email", "telefono", "telefono2"];
 const CAMPOS_DISPOSITIVO = ["tipodispositivo", "marca", "modelo", "serial", "descripcion"];
 const CAMPOS_CLIENTE_EDITABLES = ["nombre", "apellido", "email", "telefono", "telefono2"];
+
+// Estado del cliente asociado al ingreso: qué hay guardado en la base y si el
+// formulario coincide con eso (para habilitar el botón de guardar).
+let clienteBase = null; // copia de los campos al buscar/guardar, o null si no aplica
+let clienteEstado = "sin-buscar"; // "sin-buscar" | "existente" | "nuevo"
 
 const reglas = {
   documento: (v) => v.length >= 5,
@@ -196,6 +203,36 @@ inputFotosReparacion.addEventListener("change", () =>
 
 // ---------- Búsqueda de cliente ----------
 
+function leerCamposCliente() {
+  return {
+    documento: campo("documento"),
+    nombre: campo("nombre"),
+    apellido: campo("apellido"),
+    email: campo("email"),
+    telefono: campo("telefono"),
+    telefono2: campo("telefono2"),
+  };
+}
+
+function mostrarAlertaCliente(html, tipo = "success") {
+  alertaCliente.className = `alert alert-${tipo} py-2 mb-2`;
+  alertaCliente.innerHTML = html;
+}
+
+function ocultarAlertaCliente() {
+  alertaCliente.className = "alert d-none py-2 mb-2";
+}
+
+// Habilita el botón solo si el cliente es nuevo o los campos difieren de lo guardado.
+function actualizarBotonGuardar() {
+  const actual = leerCamposCliente();
+  const hayCambios =
+    clienteEstado === "nuevo" ||
+    (clienteBase !== null &&
+      CAMPOS_CLIENTE.some((id) => (actual[id] ?? "") !== (clienteBase[id] ?? "")));
+  btnGuardarCliente.disabled = !hayCambios;
+}
+
 function buscarCliente(documento) {
   return leer(CLAVE_CLIENTES, clientesSemilla).find((c) => String(c.documento ?? "") === documento);
 }
@@ -211,31 +248,53 @@ function buscarPorDocumento() {
 
   const cliente = buscarCliente(documento);
   if (!cliente) {
+    // Documento inexistente: se limpian los campos para no mezclar datos del cliente anterior.
+    CAMPOS_CLIENTE_EDITABLES.forEach((id) => {
+      document.getElementById(id).value = "";
+      document.getElementById(id).classList.remove("is-invalid");
+    });
+    clienteBase = null;
+    clienteEstado = "nuevo";
     mostrarBadge("Cliente nuevo", "bg-info text-dark");
-    return;
+  } else {
+    CAMPOS_CLIENTE_EDITABLES.forEach((id) => {
+      document.getElementById(id).value = cliente[id] ?? "";
+    });
+    clienteBase = leerCamposCliente();
+    clienteEstado = "existente";
+    mostrarBadge("Cliente existente", "bg-success");
   }
-  CAMPOS_CLIENTE_EDITABLES.forEach((id) => {
-    document.getElementById(id).value = cliente[id] ?? "";
-  });
-  mostrarBadge("Cliente existente", "bg-success");
+  ocultarAlertaCliente();
+  actualizarBotonGuardar();
 }
 
-document.getElementById("buscar-cliente").addEventListener("click", buscarPorDocumento);
-inputDocumento.addEventListener("keydown", (e) => {
-  if (e.key !== "Enter") return;
-  e.preventDefault();
-  buscarPorDocumento();
-});
-inputDocumento.addEventListener("input", ocultarBadge);
+// Guarda (o crea) el cliente en la base sin necesidad de crear un ticket.
+function guardarCliente() {
+  const pares = CAMPOS_CLIENTE.map((id) => [id, reglas[id]]);
+  if (!validarCampos(pares)) {
+    mostrarAlertaCliente("Revise los campos marcados en rojo del cliente.", "danger");
+    return false;
+  }
 
-// ---------- Alta de ingreso ----------
+  try {
+    const cliente = upsertCliente();
+    clienteBase = leerCamposCliente();
+    clienteEstado = "existente";
+    mostrarBadge("Cliente existente", "bg-success");
+    mostrarAlertaCliente(`Datos del cliente <strong>${escapar(cliente.documento)}</strong> guardados.`);
+    actualizarBotonGuardar();
+    return true;
+  } catch {
+    mostrarAlertaCliente("No se pudo guardar. El almacenamiento del navegador puede estar lleno.", "danger");
+    return false;
+  }
+}
 
-function registrarIngreso({ via, diagnostico = "", reparacion = "", monto = 0 }) {
+// Crea o actualiza el cliente según el documento del formulario (misma base "clientes:v1"
+// que usa el módulo de administración de clientes).
+function upsertCliente() {
   const clientes = leer(CLAVE_CLIENTES, clientesSemilla);
-  const tickets = leer(CLAVE_TICKETS, ticketsSemilla);
-  const documento = campo("documento");
-  const mostrador = via === "mostrador";
-
+  const { documento } = leerCamposCliente();
   const datosCliente = {
     nombre: campo("nombre"),
     apellido: campo("apellido"),
@@ -252,6 +311,43 @@ function registrarIngreso({ via, diagnostico = "", reparacion = "", monto = 0 })
     clientes.push(cliente);
   }
   guardar(CLAVE_CLIENTES, clientes);
+  return cliente;
+}
+
+document.getElementById("buscar-cliente").addEventListener("click", buscarPorDocumento);
+inputDocumento.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  buscarPorDocumento();
+});
+
+// Cambiar el documento invalida la búsqueda anterior (evita guardar con otro documento).
+inputDocumento.addEventListener("input", () => {
+  ocultarBadge();
+  clienteBase = null;
+  clienteEstado = "sin-buscar";
+  ocultarAlertaCliente();
+  actualizarBotonGuardar();
+});
+
+// Cualquier edición en los datos del cliente recalcula si hay cambios sin guardar.
+CAMPOS_CLIENTE.forEach((id) => {
+  document.getElementById(id).addEventListener("input", () => {
+    if (id !== "documento") ocultarAlertaCliente();
+    actualizarBotonGuardar();
+  });
+});
+
+btnGuardarCliente.addEventListener("click", guardarCliente);
+
+// ---------- Alta de ingreso ----------
+
+function registrarIngreso({ via, diagnostico = "", reparacion = "", monto = 0 }) {
+  const tickets = leer(CLAVE_TICKETS, ticketsSemilla);
+  const mostrador = via === "mostrador";
+
+  // Mismo upsert que usa el botón "Guardar datos del cliente".
+  const cliente = upsertCliente();
 
   const id = maxId(tickets) + 1;
   const { fecha, hora } = ahora();
@@ -305,6 +401,10 @@ function limpiarFormulario() {
   fotosIngreso.length = 0;
   renderFotos(fotosIngreso, previewIngreso);
   ocultarBadge();
+  clienteBase = null;
+  clienteEstado = "sin-buscar";
+  ocultarAlertaCliente();
+  btnGuardarCliente.disabled = true;
 }
 
 function prepararModal() {

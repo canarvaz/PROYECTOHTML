@@ -7,7 +7,7 @@ import { ticketsIniciales } from "../data/tickets";
 const tiposDispositivo = ["Torre", "Laptop", "Tablet", "Smartphone", "Impresora", "Monitor/TV", "Otro"];
 ---
 <Dashboard titulo="Recepción" activo="/recepcion">
-  <form id="form-recepcion" class="row g-3 pt-3" novalidate>
+  <form id="form-recepcion" class="row g-3 pt-0 m-0" novalidate>
     <div class="col-12 col-lg-6">
       <Tarjeta titulo="Datos del cliente" clasetitulo="text-center fs-4" clases="h-100">
         <label for="documento" class="form-label fw-bold">Documento</label>
@@ -16,11 +16,10 @@ const tiposDispositivo = ["Torre", "Laptop", "Tablet", "Smartphone", "Impresora"
           <button type="button" class="btn btn-primary" id="buscar-cliente" aria-label="Buscar cliente por documento">
             <i class="bi bi-search"></i>
           </button>
-          <div class="invalid-feedback">Ingrese el número de documento.</div>
+          <div class="invalid-feedback text-dark">Ingrese el número de documento.</div>
         </div>
-        <div class="mb-3" style="min-height:1.5rem">
-          <span class="badge d-none" id="estado-cliente"></span>
-        </div>
+        <span id="estado-cliente" class="badge d-none mb-1"></span>
+        
 
         <div class="row">
           <div class="col-md-6 mb-3">
@@ -48,6 +47,14 @@ const tiposDispositivo = ["Torre", "Laptop", "Tablet", "Smartphone", "Impresora"
             <input id="telefono2" type="tel" class="form-control" autocomplete="off" />
             <div class="invalid-feedback">Número no válido.</div>
           </div>
+        </div>
+
+        <div id="alerta-cliente" class="alert d-none py-2 mb-2" role="alert"></div>
+
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-outline-primary" id="btn-guardar-cliente" disabled>
+            <i class="bi bi-save"></i> Guardar datos del cliente
+          </button>
         </div>
       </Tarjeta>
     </div>

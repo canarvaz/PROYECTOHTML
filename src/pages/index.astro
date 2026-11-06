@@ -6,7 +6,7 @@ import { ticketsIniciales } from "../data/tickets";
 import { clientesIniciales } from "../data/clientes";
 ---
 <Dashboard titulo="Inicio" activo="/">
-  <div class="row pt-3">
+  <div class="row pt-3 g-1">
     <!-- Métricas -->
     <div class="col-12 mb-4">
       <div class="row g-3">
@@ -48,16 +48,16 @@ import { clientesIniciales } from "../data/clientes";
     <!-- Lista listos para recoger -->
     <div class="col-12 col-lg-6 mb-4">
       <Columna>
-        <Tarjeta titulo="Listos para recoger" clasetitulo="text-center">
+        <Tarjeta titulo="Listos para recoger" clasetitulo="text-center" clases="p-1">
           <div class="table-responsive">
             <table class="table table-hover align-middle table-excel table-sm mb-0">
               <thead class="table-light">
                 <tr>
-                  <th class="py-3 px-4">N° ticket</th>
-                  <th class="py-3 px-4">Cliente</th>
-                  <th class="py-3 px-4">Dispositivo</th>
-                  <th class="py-3 px-4">Última nota</th>
-                  <th class="py-3 px-4 text-center">Contactar</th>
+                  <th class="py-1 px-1">N° ticket</th>
+                  <th class="py-1 px-1">Cliente</th>
+                  <th class="py-1 px-1">Dispositivo</th>
+                  <th class="py-1 px-1">Última nota</th>
+                  <th class="py-1 px-1 text-center">Contactar</th>
                 </tr>
               </thead>
               <tbody id="cuerpo-listos"></tbody>
@@ -71,17 +71,17 @@ import { clientesIniciales } from "../data/clientes";
     <!-- Lista sin avances 24h+ -->
     <div class="col-12 col-lg-6 mb-4">
       <Columna>
-        <Tarjeta titulo="Sin avances (24 h o más)" clasetitulo="text-center">
+        <Tarjeta titulo="Sin avances (24 h o más)" clasetitulo="text-center" clases="p-1">
           <div class="table-responsive">
             <table class="table table-hover align-middle table-excel table-sm mb-0">
               <thead class="table-light">
                 <tr>
-                  <th class="py-3 px-4">N° ticket</th>
-                  <th class="py-3 px-4">Cliente</th>
-                  <th class="py-3 px-4">Dispositivo</th>
-                  <th class="py-3 px-4">Última nota</th>
-                  <th class="py-3 px-4 text-center">Días sin cambios</th>
-                  <th class="py-3 px-4 text-center">Contactar</th>
+                  <th class="py-1 px-1">N° ticket</th>
+                  <th class="py-1 px-1">Cliente</th>
+                  <th class="py-1 px-1">Dispositivo</th>
+                  <th class="py-1 px-1">Última nota</th>
+                  <th class="py-1 px-1 text-center">Días sin cambios</th>
+                  <th class="py-1 px-1 text-center">Contactar</th>
                 </tr>
               </thead>
               <tbody id="cuerpo-sinavances"></tbody>
